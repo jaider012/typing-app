@@ -1,7 +1,7 @@
-import React from 'react';
-import { HStack, Text, Divider } from '@chakra-ui/react';
-import { ActionButton } from '../../atoms';
-import { TestMode } from '../../../types/test';
+import React from "react";
+import { HStack, Text, Box } from "@chakra-ui/react";
+import { ActionButton } from "../../atoms";
+import { TestMode } from "../../../types/test";
 
 interface TestConfigBarProps {
   selectedTime: number;
@@ -11,19 +11,19 @@ interface TestConfigBarProps {
   disabled?: boolean;
 }
 
-export const TestConfigBar: React.FC<TestConfigBarProps> = ({ 
-  selectedTime, 
-  selectedMode, 
-  onTimeChange, 
-  onModeChange, 
-  disabled = false
+export const TestConfigBar: React.FC<TestConfigBarProps> = ({
+  selectedTime,
+  selectedMode,
+  onTimeChange,
+  onModeChange,
+  disabled = false,
 }) => {
   const timeOptions = [15, 30, 60, 120];
-  const modeOptions: TestMode[] = ['time', 'words', 'quote'];
+  const modeOptions: TestMode[] = ["time", "words", "quote"];
 
   return (
-    <HStack spacing={6} justify="center" mb={6} flexWrap="wrap">
-      <HStack spacing={2}>
+    <HStack gap={6} justify="center" mb={6} flexWrap="wrap">
+      <HStack gap={2}>
         <Text fontSize="sm" color="sub" fontFamily="mono">
           time
         </Text>
@@ -31,7 +31,7 @@ export const TestConfigBar: React.FC<TestConfigBarProps> = ({
           <ActionButton
             key={time}
             size="sm"
-            variant={selectedTime === time ? 'primary' : 'ghost'}
+            variant={selectedTime === time ? "solid" : "ghost"}
             onClick={() => onTimeChange(time)}
             disabled={disabled}
           >
@@ -39,10 +39,10 @@ export const TestConfigBar: React.FC<TestConfigBarProps> = ({
           </ActionButton>
         ))}
       </HStack>
-      
-      <Divider orientation="vertical" height="30px" />
-      
-      <HStack spacing={2}>
+
+      <Box height="30px" bg="border" w="1px" my={2} mx={2} />
+
+      <HStack gap={2}>
         <Text fontSize="sm" color="sub" fontFamily="mono">
           mode
         </Text>
@@ -50,7 +50,7 @@ export const TestConfigBar: React.FC<TestConfigBarProps> = ({
           <ActionButton
             key={mode}
             size="sm"
-            variant={selectedMode === mode ? 'primary' : 'ghost'}
+            variant={selectedMode === mode ? "solid" : "ghost"}
             onClick={() => onModeChange(mode)}
             disabled={disabled}
           >

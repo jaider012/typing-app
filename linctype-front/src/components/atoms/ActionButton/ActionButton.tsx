@@ -1,35 +1,49 @@
-import React, { ReactNode } from 'react';
-import { Button, ButtonProps } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import React, { ReactNode } from "react";
+import { Button, ButtonProps, ConditionalValue } from "@chakra-ui/react";
+import { MotionBox } from "../MotionBox";
 
-interface ActionButtonProps extends Omit<ButtonProps, 'variant'> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+interface ActionButtonProps extends Omit<ButtonProps, "variant"> {
+  variant?: ConditionalValue<
+    "ghost" | "outline" | "solid" | "subtle" | "surface" | "plain" | undefined
+  >;
   icon?: ReactNode;
   loading?: boolean;
   children: ReactNode;
 }
 
-export const ActionButton: React.FC<ActionButtonProps> = ({ 
-  variant = 'primary', 
-  icon, 
-  loading, 
-  children, 
-  ...props 
+export const ActionButton: React.FC<ActionButtonProps> = ({
+  variant = "solid",
+  icon,
+  loading,
+  children,
+  ...props
 }) => {
   return (
-    <Button
-      as={motion.button}
+    <MotionBox
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      leftIcon={icon}
-      isLoading={loading}
-      variant={variant}
-      fontFamily="mono"
-      borderRadius="md"
-      transition="all 0.2s"
-      {...props}
+      display="inline-block"
     >
-      {children}
-    </Button>
+      <Button
+        variant={
+          variant as ConditionalValue<
+            | "ghost"
+            | "outline"
+            | "solid"
+            | "subtle"
+            | "surface"
+            | "plain"
+            | undefined
+          >
+        }
+        loading={loading}
+        fontFamily="mono"
+        borderRadius="md"
+        {...props}
+      >
+        {icon && <span style={{ marginRight: "8px" }}>{icon}</span>}
+        {children}
+      </Button>
+    </MotionBox>
   );
 };

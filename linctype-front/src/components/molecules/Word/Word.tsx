@@ -1,8 +1,6 @@
-import React from 'react';
-import { Box } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { Character } from '../../atoms';
-import { CharacterState, CaretStyle } from '../../../types/test';
+import React from "react";
+import { Character, MotionBox } from "../../atoms";
+import { CharacterState, CaretStyle } from "../../../types/test";
 
 interface WordProps {
   word: string;
@@ -12,38 +10,40 @@ interface WordProps {
   caretStyle: CaretStyle;
 }
 
-export const Word: React.FC<WordProps> = ({ 
-  word, 
-  userInput, 
-  isActive, 
+export const Word: React.FC<WordProps> = ({
+  word,
+  userInput,
+  isActive,
   isCompleted,
-  caretStyle 
+  caretStyle,
 }) => {
   const getCharacterState = (index: number): CharacterState => {
-    if (!isActive && !isCompleted) return 'pending';
+    if (!isActive && !isCompleted) return "pending";
     if (index < userInput.length) {
-      return userInput[index] === word[index] ? 'correct' : 'incorrect';
+      return userInput[index] === word[index] ? "correct" : "incorrect";
     }
-    if (isActive && index === userInput.length) return 'current';
-    return 'pending';
+    if (isActive && index === userInput.length) return "current";
+    return "pending";
   };
 
   return (
-    <Box
-      as={motion.span}
+    <MotionBox
+      as="span"
       display="inline-block"
       mr={4}
       mb={2}
       px={isActive ? 2 : 0}
       py={isActive ? 1 : 0}
-      bg={isActive ? 'wordActive' : 'transparent'}
+      bg={isActive ? "wordActive" : "transparent"}
       borderRadius="sm"
-      transition="all 0.2s ease"
-      animate={{ 
-        backgroundColor: isActive ? 'var(--chakra-colors-wordActive)' : 'transparent' 
+      animate={{
+        backgroundColor: isActive
+          ? "var(--chakra-colors-wordActive)"
+          : "transparent",
       }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
     >
-      {word.split('').map((char, index) => (
+      {word.split("").map((char, index) => (
         <Character
           key={`${word}-${index}`}
           char={char}
@@ -61,6 +61,6 @@ export const Word: React.FC<WordProps> = ({
           caretStyle={caretStyle}
         />
       )}
-    </Box>
+    </MotionBox>
   );
 };

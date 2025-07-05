@@ -1,6 +1,6 @@
 import React from "react";
 import { CaretStyle } from "../../../types/test";
-import { MotionBox, motionVariants } from "../MotionBox";
+import { MotionBox } from "../MotionBox";
 
 interface CaretProps {
   style: CaretStyle;

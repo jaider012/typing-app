@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
-import { Box, Text, HStack, Icon } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { Text, HStack, Icon } from '@chakra-ui/react';
 import { BiTrendingUp, BiTrendingDown } from 'react-icons/bi';
+import { MotionBox, MotionText } from '../../atoms';
 
 interface ResultMetricProps {
   label: string;
@@ -19,8 +19,7 @@ export const ResultMetric: React.FC<ResultMetricProps> = ({
   icon 
 }) => {
   return (
-    <Box
-      as={motion.div}
+    <MotionBox
       textAlign="center"
       p={6}
       bg="card"
@@ -32,30 +31,29 @@ export const ResultMetric: React.FC<ResultMetricProps> = ({
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       {icon && (
-        <Box mb={3} color="primary.400" fontSize="2xl">
+        <MotionBox mb={3} color="primary.400" fontSize="2xl">
           {icon}
-        </Box>
+        </MotionBox>
       )}
       
-      <Text
+      <MotionText
         fontSize="3xl"
         fontWeight="bold"
         color="main"
         fontFamily="mono"
-        as={motion.div}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
       >
         {value}
-      </Text>
+      </MotionText>
       
       <Text fontSize="sm" color="sub" mt={2} fontFamily="mono">
         {label}
       </Text>
       
       {previousValue !== undefined && (
-        <HStack justify="center" mt={2} spacing={1}>
+        <HStack justify="center" mt={2} gap={1}>
           <Icon 
             as={improvement ? BiTrendingUp : BiTrendingDown} 
             color={improvement ? 'green.400' : 'red.400'}
@@ -66,6 +64,6 @@ export const ResultMetric: React.FC<ResultMetricProps> = ({
           </Text>
         </HStack>
       )}
-    </Box>
+    </MotionBox>
   );
 };
