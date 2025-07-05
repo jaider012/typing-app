@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { Box, Textarea, Text } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { Textarea, Text } from '@chakra-ui/react';
 import { Word } from '../../molecules';
+import { MotionBox, MotionText } from '../../atoms';
 import { CaretStyle } from '../../../types/test';
 
 interface TypingAreaProps {
@@ -72,7 +72,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   const displayStartIndex = Math.max(0, currentWordIndex - 10);
 
   return (
-    <Box position="relative" w="full" maxW="900px" mx="auto">
+    <MotionBox position="relative" w="full" maxW="900px" mx="auto">
       {/* Invisible input for capturing typing */}
       <Textarea
         ref={textareaRef}
@@ -96,7 +96,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
       />
       
       {/* Words display area */}
-      <Box
+      <MotionBox
         minH="120px"
         maxH="200px"
         overflow="hidden"
@@ -109,14 +109,12 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         lineHeight="1.8"
         fontFamily="mono"
         cursor="text"
-        transition="all 0.2s"
         onClick={handleClick}
-        as={motion.div}
         whileHover={{ borderColor: 'primary.300' }}
+        transition={{ duration: 0.2 }}
         position="relative"
       >
-        <Box
-          as={motion.div}
+        <MotionBox
           layout
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
@@ -125,7 +123,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             const isCurrentWord = actualWordIndex === currentWordIndex;
             
             return (
-              <Box
+              <MotionBox
                 key={`word-${actualWordIndex}`}
                 ref={isCurrentWord ? activeWordRef : null}
                 display="inline-block"
@@ -137,13 +135,13 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
                   isCompleted={actualWordIndex < currentWordIndex}
                   caretStyle={caretStyle}
                 />
-              </Box>
+              </MotionBox>
             );
           })}
-        </Box>
+        </MotionBox>
         
         {/* Fade gradient at bottom */}
-        <Box
+        <MotionBox
           position="absolute"
           bottom={0}
           left={0}
@@ -152,24 +150,23 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           bgGradient="linear(to-t, textArea, transparent)"
           pointerEvents="none"
         />
-      </Box>
+      </MotionBox>
       
       {/* Hint text */}
       {!isActive && (
-        <Text
+        <MotionText
           textAlign="center"
           mt={4}
           fontSize="sm"
           color="sub"
           fontFamily="mono"
-          as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          transition={{ duration: 0.3, delay: 0.5 }}
         >
           Click here or start typing to begin • Press Tab to restart
-        </Text>
+        </MotionText>
       )}
-    </Box>
+    </MotionBox>
   );
 };
