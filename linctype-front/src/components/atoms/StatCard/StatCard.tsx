@@ -1,38 +1,37 @@
-import React, { ReactNode } from 'react';
-import { Box, Text } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import React, { ReactNode } from "react";
+import { Box, Text } from "@chakra-ui/react";
+import { MotionBox } from "../MotionBox";
 
 interface StatCardProps {
   label: string;
   value: string | number;
   color?: string;
   icon?: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ 
-  label, 
-  value, 
-  color = 'main', 
-  icon, 
-  size = 'md' 
+export const StatCard: React.FC<StatCardProps> = ({
+  label,
+  value,
+  color = "main",
+  icon,
+  size = "md",
 }) => {
   const sizes = {
-    sm: { p: 3, fontSize: 'sm', valueSize: 'lg' },
-    md: { p: 4, fontSize: 'md', valueSize: 'xl' },
-    lg: { p: 6, fontSize: 'lg', valueSize: '2xl' }
+    sm: { p: 3, fontSize: "sm", valueSize: "lg" },
+    md: { p: 4, fontSize: "md", valueSize: "xl" },
+    lg: { p: 6, fontSize: "lg", valueSize: "2xl" },
   };
 
   return (
-    <Box
-      as={motion.div}
+    <MotionBox
       bg="card"
       borderRadius="md"
       textAlign="center"
       border="1px solid"
       borderColor="border"
       whileHover={{ scale: 1.02 }}
-      transition="all 0.2s"
+      transition={{ duration: 0.2, ease: "easeInOut" }}
       {...sizes[size]}
     >
       {icon && (
@@ -40,22 +39,22 @@ export const StatCard: React.FC<StatCardProps> = ({
           {icon}
         </Box>
       )}
-      <Text 
-        fontSize={sizes[size].valueSize} 
-        fontWeight="bold" 
+      <Text
+        fontSize={sizes[size].valueSize}
+        fontWeight="bold"
         color={color}
         fontFamily="mono"
       >
         {value}
       </Text>
-      <Text 
-        fontSize={sizes[size].fontSize} 
-        color="sub" 
+      <Text
+        fontSize={sizes[size].fontSize}
+        color="sub"
         mt={1}
         fontFamily="mono"
       >
         {label}
       </Text>
-    </Box>
+    </MotionBox>
   );
 };

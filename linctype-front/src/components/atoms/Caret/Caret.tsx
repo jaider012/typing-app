@@ -1,7 +1,6 @@
-import React from 'react';
-import { Box } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import { CaretStyle } from '../../../types/test';
+import React from "react";
+import { CaretStyle } from "../../../types/test";
+import { MotionBox, motionVariants } from "../MotionBox";
 
 interface CaretProps {
   style: CaretStyle;
@@ -11,54 +10,54 @@ interface CaretProps {
 export const Caret: React.FC<CaretProps> = ({ style, smooth = true }) => {
   const getCaretStyles = (caretStyle: CaretStyle) => {
     const baseStyles = {
-      position: 'absolute' as const,
-      left: '0',
-      top: '0',
-      pointerEvents: 'none' as const,
+      position: "absolute" as const,
+      left: "0",
+      top: "0",
+      pointerEvents: "none" as const,
       zIndex: 1,
     };
 
     switch (caretStyle) {
-      case 'line':
+      case "line":
         return {
           ...baseStyles,
-          width: '2px',
-          height: '100%',
-          bg: 'caret',
-          left: '0',
+          width: "2px",
+          height: "100%",
+          bg: "caret",
+          left: "0",
         };
-      case 'block':
+      case "block":
         return {
           ...baseStyles,
-          width: '100%',
-          height: '100%',
-          bg: 'caret',
+          width: "100%",
+          height: "100%",
+          bg: "caret",
           opacity: 0.5,
         };
-      case 'outline':
+      case "outline":
         return {
           ...baseStyles,
-          width: '100%',
-          height: '100%',
-          border: '2px solid',
-          borderColor: 'caret',
-          bg: 'transparent',
+          width: "100%",
+          height: "100%",
+          border: "2px solid",
+          borderColor: "caret",
+          bg: "transparent",
         };
-      case 'underline':
+      case "underline":
         return {
           ...baseStyles,
-          width: '100%',
-          height: '2px',
-          bg: 'caret',
-          bottom: '0',
-          top: 'auto',
+          width: "100%",
+          height: "2px",
+          bg: "caret",
+          bottom: "0",
+          top: "auto",
         };
       default:
         return {
           ...baseStyles,
-          width: '2px',
-          height: '100%',
-          bg: 'caret',
+          width: "2px",
+          height: "100%",
+          bg: "caret",
         };
     }
   };
@@ -66,14 +65,15 @@ export const Caret: React.FC<CaretProps> = ({ style, smooth = true }) => {
   const caretStyles = getCaretStyles(style);
 
   return (
-    <Box
-      as={motion.div}
+    <MotionBox
       {...caretStyles}
       animate={{ opacity: [1, 0, 1] }}
       transition={{
-        duration: 1,
-        repeat: Infinity,
-        ease: 'easeInOut',
+        opacity: {
+          duration: 1,
+          repeat: Infinity,
+          ease: "easeInOut",
+        },
       }}
     />
   );
