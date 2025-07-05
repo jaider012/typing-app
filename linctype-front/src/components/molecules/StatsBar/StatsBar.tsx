@@ -1,7 +1,4 @@
 import React from "react";
-import { Icon } from "@chakra-ui/react";
-import { BiTachometer, BiTime, BiX } from "react-icons/bi";
-import { BiTargetLock } from "react-icons/bi";
 import { StatCard, MotionBox } from "../../atoms";
 
 interface StatsBarProps {
@@ -41,25 +38,21 @@ export const StatsBar: React.FC<StatsBarProps> = ({
         label="WPM"
         value={wpm}
         color="primary.400"
-        icon={<Icon as={BiTachometer} />}
       />
       <StatCard
         label="Accuracy"
         value={`${accuracy}%`}
         color="green.400"
-        icon={<Icon as={BiTargetLock} />}
       />
       <StatCard
         label="Time"
         value={formatTime(timeLeft)}
         color="orange.400"
-        icon={<Icon as={BiTime} />}
       />
       <StatCard
         label="Errors"
         value={errors}
         color="red.400"
-        icon={<Icon as={BiX} />}
       />
     </MotionBox>
   );

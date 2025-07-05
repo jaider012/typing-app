@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Flex, HStack, Text, Icon, IconButton } from "@chakra-ui/react";
-import { BiTachometer, BiSun, BiMoon, BiCog } from "react-icons/bi";
+import { Box, Flex, HStack, Text, IconButton } from "@chakra-ui/react";
 import { ActionButton } from "../../atoms";
+import { useColorMode } from "../../ui/color-mode";
 import { User } from "../../../types/user";
 
 interface NavigationProps {
@@ -17,7 +17,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   onSettingsOpen,
   onAuthAction,
 }) => {
-  const colorMode = "light"; // Simplified for now
+  const { colorMode } = useColorMode();
 
   return (
     <Box
@@ -36,7 +36,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       <Flex justify="space-between" align="center" maxW="1200px" mx="auto">
         {/* Logo */}
         <HStack gap={2}>
-          <Icon as={BiTachometer} fontSize="2xl" color="primary.400" />
+          <Text fontSize="2xl" color="primary.400">⚡</Text>
           <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono">
             linctype
           </Text>
@@ -48,18 +48,16 @@ export const Navigation: React.FC<NavigationProps> = ({
             aria-label="Toggle theme"
             variant="ghost"
             onClick={onThemeToggle}
-            fontSize="lg"
           >
-            <Icon as={colorMode === "light" ? BiMoon : BiSun} />
+            {colorMode === "light" ? "🌙" : "☀️"}
           </IconButton>
 
           <IconButton
             aria-label="Settings"
             variant="ghost"
             onClick={onSettingsOpen}
-            fontSize="lg"
           >
-            <Icon as={BiCog} />
+            ⚙️
           </IconButton>
 
           {user ? (

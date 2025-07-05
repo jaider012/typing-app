@@ -1,157 +1,79 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { createSystem, defaultConfig } from '@chakra-ui/react';
 
-const config: ThemeConfig = {
-  initialColorMode: 'dark',
-  useSystemColorMode: true,
-};
-
-export const theme = extendTheme({
-  config,
-  fonts: {
-    mono: '"Roboto Mono", "Fira Code", Consolas, "Liberation Mono", "Menlo", monospace',
-    heading: '"Roboto Mono", "Fira Code", Consolas, monospace',
-    body: '"Roboto Mono", "Fira Code", Consolas, monospace',
-  },
-  
-  semanticTokens: {
-    colors: {
-      // Background colors
-      bg: { 
-        default: 'gray.900', 
-        _light: 'gray.50' 
+// Crear el sistema de tema personalizado para Chakra UI v3
+export const system = createSystem(defaultConfig, {
+  theme: {
+    tokens: {
+      fonts: {
+        mono: { value: '"Roboto Mono", "Fira Code", Consolas, "Liberation Mono", "Menlo", monospace' },
+        heading: { value: '"Roboto Mono", "Fira Code", Consolas, monospace' },
+        body: { value: '"Roboto Mono", "Fira Code", Consolas, monospace' },
       },
-      card: { 
-        default: 'gray.800', 
-        _light: 'white' 
-      },
-      modal: { 
-        default: 'gray.800', 
-        _light: 'white' 
-      },
-      textArea: { 
-        default: 'gray.800', 
-        _light: 'gray.100' 
-      },
-      
-      // Text colors
-      main: { 
-        default: 'gray.100', 
-        _light: 'gray.800' 
-      },
-      sub: { 
-        default: 'gray.500', 
-        _light: 'gray.600' 
-      },
-      
-      // UI elements
-      border: { 
-        default: 'gray.700', 
-        _light: 'gray.200' 
-      },
-      caret: { 
-        default: 'yellow.400', 
-        _light: 'yellow.500' 
-      },
-      wordActive: { 
-        default: 'gray.700', 
-        _light: 'gray.200' 
-      },
-      
-      // Character states
-      correct: { 
-        default: 'green.400', 
-        _light: 'green.500' 
-      },
-      incorrect: { 
-        default: 'red.400', 
-        _light: 'red.500' 
-      },
-      pending: { 
-        default: 'gray.600', 
-        _light: 'gray.400' 
-      },
-      current: {
-        default: 'yellow.300',
-        _light: 'yellow.600'
-      }
-    }
-  },
-  
-  components: {
-    Button: {
-      variants: {
+      colors: {
+        // Primary colors (yellow theme)
         primary: {
-          bg: 'yellow.400',
-          color: 'gray.900',
-          fontFamily: 'mono',
-          fontWeight: 'semibold',
-          _hover: { 
-            bg: 'yellow.300',
-            transform: 'translateY(-1px)',
-          },
-          _active: {
-            bg: 'yellow.500',
-            transform: 'translateY(0)',
-          }
+          50: { value: '#fefce8' },
+          100: { value: '#fef3c7' },
+          200: { value: '#fde68a' },
+          300: { value: '#fcd34d' },
+          400: { value: '#fbbf24' },
+          500: { value: '#f59e0b' },
+          600: { value: '#d97706' },
+          700: { value: '#b45309' },
+          800: { value: '#92400e' },
+          900: { value: '#78350f' },
         },
-        secondary: {
-          bg: 'gray.600',
-          color: 'white',
-          fontFamily: 'mono',
-          _hover: { 
-            bg: 'gray.500' 
-          },
-          _dark: {
-            bg: 'gray.600',
-            _hover: { bg: 'gray.500' }
-          }
+      },
+    },
+    semanticTokens: {
+      colors: {
+        // Background colors
+        bg: { 
+          value: { base: '#ffffff', _dark: '#0f0f0f' } 
         },
-        ghost: {
-          color: 'sub',
-          fontFamily: 'mono',
-          _hover: { 
-            bg: 'card', 
-            color: 'main' 
-          }
+        card: { 
+          value: { base: '#ffffff', _dark: '#1a1a1a' } 
         },
-        danger: {
-          bg: 'red.500',
-          color: 'white',
-          fontFamily: 'mono',
-          _hover: { 
-            bg: 'red.400' 
-          }
+        modal: { 
+          value: { base: '#ffffff', _dark: '#1a1a1a' } 
+        },
+        textArea: { 
+          value: { base: '#f8f9fa', _dark: '#1a1a1a' } 
+        },
+        
+        // Text colors
+        main: { 
+          value: { base: '#1a1a1a', _dark: '#e5e5e5' } 
+        },
+        sub: { 
+          value: { base: '#6b7280', _dark: '#9ca3af' } 
+        },
+        
+        // UI elements
+        border: { 
+          value: { base: '#e5e7eb', _dark: '#374151' } 
+        },
+        caret: { 
+          value: { base: '#f59e0b', _dark: '#fbbf24' } 
+        },
+        wordActive: { 
+          value: { base: '#f3f4f6', _dark: '#374151' } 
+        },
+        
+        // Character states
+        correct: { 
+          value: { base: '#10b981', _dark: '#34d399' } 
+        },
+        incorrect: { 
+          value: { base: '#ef4444', _dark: '#f87171' } 
+        },
+        pending: { 
+          value: { base: '#9ca3af', _dark: '#6b7280' } 
+        },
+        current: {
+          value: { base: '#f59e0b', _dark: '#fbbf24' }
         }
       }
-    },
-    
-    Text: {
-      baseStyle: {
-        fontFamily: 'mono',
-      }
-    },
-    
-    Heading: {
-      baseStyle: {
-        fontFamily: 'mono',
-        fontWeight: 'bold',
-      }
     }
-  },
-  
-  styles: {
-    global: (props: any) => ({
-      body: {
-        bg: 'bg',
-        color: 'main',
-        fontFamily: 'mono',
-      },
-      '*::placeholder': {
-        color: 'sub',
-      },
-      '*, *::before, &::after': {
-        borderColor: 'border',
-      },
-    }),
-  },
+  }
 });

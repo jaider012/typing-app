@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Text, HStack, Icon } from '@chakra-ui/react';
-import { BiTrendingUp, BiTrendingDown } from 'react-icons/bi';
+import { Text, HStack } from '@chakra-ui/react';
 import { MotionBox, MotionText } from '../../atoms';
 
 interface ResultMetricProps {
@@ -54,13 +53,8 @@ export const ResultMetric: React.FC<ResultMetricProps> = ({
       
       {previousValue !== undefined && (
         <HStack justify="center" mt={2} gap={1}>
-          <Icon 
-            as={improvement ? BiTrendingUp : BiTrendingDown} 
-            color={improvement ? 'green.400' : 'red.400'}
-            fontSize="sm"
-          />
-          <Text fontSize="xs" color="sub" fontFamily="mono">
-            {previousValue}
+          <Text fontSize="xs" color={improvement ? "green.400" : "red.400"} fontFamily="mono">
+            {improvement ? "↗" : "↘"} {previousValue}
           </Text>
         </HStack>
       )}

@@ -100,20 +100,45 @@ npm run lint
 ## Architecture Overview
 
 ### Current Implementation
-- **Frontend**: React 18 with TypeScript
+- **Frontend**: React 18 with TypeScript, Chakra UI, Framer Motion
 - **Backend**: NestJS with Firebase Admin SDK
 - **Authentication**: Firebase Auth with JWT tokens
 - **Database**: Firestore (NoSQL document database)
-- **State Management**: React hooks (useState, useEffect)
-- **Styling**: CSS with custom classes
+- **Architecture**: Atomic Design pattern (atoms → molecules → organisms → templates → pages)
+- **State Management**: Custom hooks with React hooks
+- **Styling**: Chakra UI with custom theme and semantic tokens
+- **Animations**: Framer Motion for smooth interactions
 - **Testing**: Jest with @testing-library/react (frontend), Jest (backend)
 - **Build Tool**: Create React App (frontend), NestJS CLI (backend)
 
 ### Key Components
 
-**Frontend:**
-- `App.tsx`: Main component handling typing test logic including WPM calculation, word tracking, and user input
-- `calculateScore.ts`: Utility function for score calculation based on words typed, WPM, accuracy, and first-strike accuracy
+**Frontend Architecture (Atomic Design):**
+
+*Atoms (Basic Elements):*
+- `Character`: Individual character with state (correct/incorrect/pending/current)
+- `Caret`: Animated typing cursor with multiple styles
+- `StatCard`: Reusable metric display cards
+- `ActionButton`: Styled buttons with animations
+
+*Molecules (Simple Combinations):*
+- `Word`: Complete word with character-by-character feedback
+- `StatsBar`: Real-time statistics display (WPM, accuracy, time, errors)
+- `TestConfigBar`: Test configuration controls (time, mode)
+- `ResultMetric`: Individual result metrics with comparisons
+
+*Organisms (Complex Sections):*
+- `TypingArea`: Main typing interface with auto-scroll and focus management
+- `TestResults`: Comprehensive results modal with animations
+- `Navigation`: App header with user menu and settings
+
+*Templates & Pages:*
+- `MainLayout`: App-wide layout with navigation and theme management
+- `TypingTestPage`: Complete typing test experience
+
+**Custom Hooks:**
+- `useTypingTest`: Complete typing test logic and state management
+- `useTimer`: Countdown timer with start/pause/reset functionality
 
 **Backend:**
 - `FirebaseService`: Firebase Admin SDK integration for authentication and Firestore operations

@@ -1,12 +1,5 @@
 import React from "react";
-import { Text, Grid, Box, HStack, Icon } from "@chakra-ui/react";
-import {
-  BiTachometer,
-  BiTargetLock,
-  BiBarChart,
-  BiRefresh,
-  BiSave,
-} from "react-icons/bi";
+import { Text, Grid, Box, HStack } from "@chakra-ui/react";
 import { ResultMetric } from "../../molecules";
 import { ActionButton, MotionBox } from "../../atoms";
 import { TestResult } from "../../../types/test";
@@ -81,7 +74,6 @@ export const TestResults: React.FC<TestResultsProps> = ({
             value={results.wpm}
             previousValue={previousBest?.wpm}
             improvement={improvements?.wpm}
-            icon={<Icon as={BiTachometer} />}
           />
           <ResultMetric
             label="Accuracy"
@@ -90,7 +82,6 @@ export const TestResults: React.FC<TestResultsProps> = ({
               previousBest ? `${previousBest.accuracy}%` : undefined
             }
             improvement={improvements?.accuracy}
-            icon={<Icon as={BiTargetLock} />}
           />
           <ResultMetric
             label="Consistency"
@@ -101,7 +92,6 @@ export const TestResults: React.FC<TestResultsProps> = ({
                 : undefined
             }
             improvement={improvements?.consistency}
-            icon={<Icon as={BiBarChart} />}
           />
         </Grid>
 
@@ -159,7 +149,6 @@ export const TestResults: React.FC<TestResultsProps> = ({
         <HStack gap={4} justify="center">
           <ActionButton
             variant="solid"
-            icon={<Icon as={BiRefresh} />}
             onClick={onRetry}
             size="lg"
           >
@@ -168,7 +157,6 @@ export const TestResults: React.FC<TestResultsProps> = ({
           {onSave && (
             <ActionButton
               variant="solid"
-              icon={<Icon as={BiSave} />}
               onClick={onSave}
               size="lg"
             >
