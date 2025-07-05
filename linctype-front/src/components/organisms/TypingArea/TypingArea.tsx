@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { Textarea, Text } from '@chakra-ui/react';
-import { Word } from '../../molecules';
-import { MotionBox, MotionText } from '../../atoms';
-import { CaretStyle } from '../../../types/test';
+import React, { useRef, useEffect } from "react";
+import { Textarea, Text } from "@chakra-ui/react";
+import { Word } from "../../molecules";
+import { MotionBox, MotionText } from "../../atoms";
+import { CaretStyle } from "../../../types/test";
 
 interface TypingAreaProps {
   words: string[];
@@ -16,16 +16,16 @@ interface TypingAreaProps {
   onKeyDown: (e: KeyboardEvent) => void;
 }
 
-export const TypingArea: React.FC<TypingAreaProps> = ({ 
-  words, 
-  currentWordIndex, 
+export const TypingArea: React.FC<TypingAreaProps> = ({
+  words,
+  currentWordIndex,
   currentCharIndex,
-  userInput, 
-  completedWords, 
-  isActive, 
+  userInput,
+  completedWords,
+  isActive,
   caretStyle,
-  onInput, 
-  onKeyDown 
+  onInput,
+  onKeyDown,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const activeWordRef = useRef<HTMLDivElement>(null);
@@ -41,9 +41,9 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
   useEffect(() => {
     if (activeWordRef.current) {
       activeWordRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center'
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
       });
     }
   }, [currentWordIndex]);
@@ -66,11 +66,10 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
 
   // Calculate display words (show current and next few lines)
   const displayWords = words.slice(
-    Math.max(0, currentWordIndex - 10), 
+    Math.max(0, currentWordIndex - 10),
     currentWordIndex + 50
   );
   const displayStartIndex = Math.max(0, currentWordIndex - 10);
-
   return (
     <MotionBox position="relative" w="full" maxW="900px" mx="auto">
       {/* Invisible input for capturing typing */}
@@ -94,7 +93,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         tabIndex={0}
         aria-label="Typing input"
       />
-      
+
       {/* Words display area */}
       <MotionBox
         minH="120px"
@@ -104,24 +103,21 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
         bg="textArea"
         borderRadius="lg"
         border="2px solid"
-        borderColor={isActive ? 'primary.400' : 'border'}
+        borderColor={isActive ? "primary.400" : "border"}
         fontSize="1.5rem"
         lineHeight="1.8"
         fontFamily="mono"
         cursor="text"
         onClick={handleClick}
-        whileHover={{ borderColor: 'primary.300' }}
+        whileHover={{ borderColor: "primary.300" }}
         transition={{ duration: 0.2 }}
         position="relative"
       >
-        <MotionBox
-          layout
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-        >
+        <MotionBox layout transition={{ duration: 0.3, ease: "easeInOut" }}>
           {displayWords.map((word, index) => {
             const actualWordIndex = displayStartIndex + index;
             const isCurrentWord = actualWordIndex === currentWordIndex;
-            
+
             return (
               <MotionBox
                 key={`word-${actualWordIndex}`}
@@ -130,7 +126,11 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
               >
                 <Word
                   word={word}
-                  userInput={isCurrentWord ? userInput : completedWords[actualWordIndex] || ''}
+                  userInput={
+                    isCurrentWord
+                      ? userInput
+                      : completedWords[actualWordIndex] || ""
+                  }
                   isActive={isCurrentWord}
                   isCompleted={actualWordIndex < currentWordIndex}
                   caretStyle={caretStyle}
@@ -139,7 +139,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
             );
           })}
         </MotionBox>
-        
+
         {/* Fade gradient at bottom */}
         <MotionBox
           position="absolute"
@@ -151,7 +151,7 @@ export const TypingArea: React.FC<TypingAreaProps> = ({
           pointerEvents="none"
         />
       </MotionBox>
-      
+
       {/* Hint text */}
       {!isActive && (
         <MotionText

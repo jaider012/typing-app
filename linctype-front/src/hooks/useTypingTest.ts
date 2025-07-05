@@ -96,6 +96,7 @@ export const useTypingTest = () => {
           isActive: true,
           startTime: Date.now(),
           userInput: value,
+          currentCharIndex: value.length,
         };
       }
 
@@ -105,7 +106,7 @@ export const useTypingTest = () => {
       let newErrors = prev.errors;
       const newMistakePositions = new Set(prev.mistakePositions);
 
-      // Check for new errors
+      // Check for new errors only when typing forward
       if (value.length > prev.userInput.length) {
         const newCharIndex = value.length - 1;
         const typedChar = value[newCharIndex];
@@ -117,9 +118,9 @@ export const useTypingTest = () => {
         }
       }
 
-      // Handle word completion (space or exact match)
-      if (value.endsWith(' ') || value === currentWord) {
-        const typedWord = value.replace(' ', '');
+      // Handle space key - move to next word
+      if (value.endsWith(' ')) {
+        const typedWord = value.slice(0, -1); // Remove the space
         const newCompletedWords = [...prev.completedWords, typedWord];
         const newCurrentWordIndex = prev.currentWordIndex + 1;
 
@@ -130,6 +131,7 @@ export const useTypingTest = () => {
             completedWords: newCompletedWords,
             userInput: '',
             currentWordIndex: newCurrentWordIndex,
+            currentCharIndex: 0,
             isCompleted: true,
             isActive: false,
             errors: newErrors,
@@ -148,6 +150,19 @@ export const useTypingTest = () => {
         };
       }
 
+      // Handle exact word completion without space
+      if (value === currentWord) {
+        // Don't auto-advance, wait for space
+        return {
+          ...prev,
+          userInput: value,
+          currentCharIndex: value.length,
+          errors: newErrors,
+          mistakePositions: newMistakePositions,
+        };
+      }
+
+      // Normal typing
       return {
         ...prev,
         userInput: value,

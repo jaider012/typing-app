@@ -68,7 +68,7 @@ export const TypingTestPage: React.FC = () => {
           userInput={userInput}
           completedWords={completedWords}
           isActive={isActive}
-          caretStyle="line" // TODO: Get from settings
+          caretStyle="block" // TODO: Get from settings
           onInput={handleInput}
           onKeyDown={handleKeyDown}
         />
@@ -78,7 +78,6 @@ export const TypingTestPage: React.FC = () => {
           <HStack gap={4}>
             <ActionButton
               variant="solid"
-              // icon={<BiPlay />}
               onClick={() => {
                 // Test will start when user begins typing
                 // This button is mainly visual
@@ -92,7 +91,6 @@ export const TypingTestPage: React.FC = () => {
         {isActive && (
           <ActionButton
             variant="solid"
-            // icon={<BiRefresh />}
             onClick={resetTest}
             size="sm"
           >

@@ -1,6 +1,7 @@
 import React from "react";
 import { Character, MotionBox } from "../../atoms";
 import { CharacterState, CaretStyle } from "../../../types/test";
+import { useColorModeValue } from "../../ui/color-mode";
 
 interface WordProps {
   word: string;
@@ -17,6 +18,10 @@ export const Word: React.FC<WordProps> = ({
   isCompleted,
   caretStyle,
 }) => {
+  // Color mode values
+  const activeBg = useColorModeValue("gray.100", "gray.800");
+  const activeBorder = useColorModeValue("gray.300", "gray.600");
+  
   const getCharacterState = (index: number): CharacterState => {
     if (!isActive && !isCompleted) return "pending";
     if (index < userInput.length) {
@@ -32,14 +37,15 @@ export const Word: React.FC<WordProps> = ({
       display="inline-block"
       mr={4}
       mb={2}
-      px={isActive ? 2 : 0}
-      py={isActive ? 1 : 0}
-      bg={isActive ? "wordActive" : "transparent"}
-      borderRadius="sm"
+      px={isActive ? 1 : 0}
+      py={isActive ? 0.5 : 0}
+      bg={isActive ? activeBg : "transparent"}
+      borderRadius="md"
+      border={isActive ? "1px solid" : "none"}
+      borderColor={isActive ? activeBorder : "transparent"}
       animate={{
-        backgroundColor: isActive
-          ? "var(--chakra-colors-wordActive)"
-          : "transparent",
+        backgroundColor: isActive ? activeBg : "transparent",
+        borderColor: isActive ? activeBorder : "transparent",
       }}
       transition={{ duration: 0.2, ease: "easeInOut" }}
     >
