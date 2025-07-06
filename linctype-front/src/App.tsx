@@ -6,10 +6,11 @@ import { AuthProvider } from './contexts/AuthContext';
 import { TypingTestPage } from './components';
 import { ProfilePage } from './components/pages/ProfilePage';
 import { LeaderboardPage } from './components/pages/LeaderboardPage';
+import { system } from './theme';
 
 const App: React.FC = () => {
   return (
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={system}>
       <ColorModeProvider>
         <AuthProvider>
           <Router>

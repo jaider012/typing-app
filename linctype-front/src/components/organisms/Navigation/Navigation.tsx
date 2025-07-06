@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Box, Flex, HStack, Text, IconButton } from "@chakra-ui/react";
-import { ActionButton } from "../../atoms";
+import { ActionButton, UserAvatar } from "../../atoms";
 import { useColorMode } from "../../ui/color-mode";
 import { AuthUser } from "../../../types/auth";
 
@@ -112,7 +112,12 @@ export const Navigation: React.FC<NavigationProps> = ({
           </IconButton>
 
           {user ? (
-            <HStack gap={2}>
+            <HStack gap={3}>
+              <UserAvatar
+                src={user.photoURL}
+                name={user.displayName || user.email || "User"}
+                size="sm"
+              />
               <Text fontSize="sm" fontFamily="mono" color="main">
                 {user.displayName || user.email?.split("@")[0]}
               </Text>

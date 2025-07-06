@@ -6,7 +6,7 @@ import { ResultMetric } from '../../molecules';
 import { MotionBox } from '../../atoms/MotionBox';
 import { useUserStats } from '../../../hooks/useUserStats';
 import { useAuth } from '../../../hooks/useAuth';
-import { TestResult } from '../../../services/api';
+import { TestResult } from '../../../services/types';
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth();

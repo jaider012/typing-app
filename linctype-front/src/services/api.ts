@@ -1,63 +1,16 @@
-import axios, { AxiosInstance, AxiosError } from 'axios';
-import { getIdToken } from './firebase';
+import axios, { AxiosInstance, AxiosError } from "axios";
+import { getIdToken } from "./firebase";
+import {
+  CreateTestDto,
+  TestResult,
+  UserStats,
+  UserProfile,
+  LeaderboardEntry,
+  ApiError,
+} from "./types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
-
-export interface CreateTestDto {
-  wpm: number;
-  accuracy: number;
-  score: number;
-  wordsTyped: number;
-  timeSpent: number;
-  mistakes: number;
-  text: string;
-}
-
-export interface TestResult {
-  id: string;
-  uid: string;
-  wpm: number;
-  accuracy: number;
-  score: number;
-  wordsTyped: number;
-  timeSpent: number;
-  mistakes: number;
-  text: string;
-  createdAt: string;
-}
-
-export interface UserStats {
-  totalTests: number;
-  bestWpm: number;
-  bestAccuracy: number;
-  bestScore: number;
-  averageWpm: number;
-  averageAccuracy: number;
-  updatedAt: string;
-}
-
-export interface UserProfile {
-  uid: string;
-  email: string;
-  displayName?: string;
-  photoURL?: string;
-  createdAt: string;
-  lastLoginAt: string;
-}
-
-export interface LeaderboardEntry {
-  uid: string;
-  displayName?: string;
-  photoURL?: string;
-  value: number;
-  rank: number;
-}
-
-export interface ApiError {
-  message: string;
-  status: number;
-  statusText: string;
-}
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:3001/api";
 
 class ApiService {
   private api: AxiosInstance;
@@ -67,7 +20,7 @@ class ApiService {
       baseURL: API_BASE_URL,
       timeout: 10000,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -84,7 +37,7 @@ class ApiService {
             config.headers.Authorization = `Bearer ${token}`;
           }
         } catch (error) {
-          console.error('Error getting Firebase token:', error);
+          console.error("Error getting Firebase token:", error);
         }
         return config;
       },
@@ -98,7 +51,7 @@ class ApiService {
         const apiError: ApiError = {
           message: this.getErrorMessage(error),
           status: error.response?.status || 500,
-          statusText: error.response?.statusText || 'Unknown Error',
+          statusText: error.response?.statusText || "Unknown Error",
         };
         return Promise.reject(apiError);
       }
@@ -106,7 +59,7 @@ class ApiService {
   }
 
   private getErrorMessage(error: AxiosError): string {
-    if (error.response?.data && typeof error.response.data === 'object') {
+    if (error.response?.data && typeof error.response.data === "object") {
       const data = error.response.data as any;
       if (data.message) return data.message;
       if (data.error) return data.error;
@@ -114,62 +67,64 @@ class ApiService {
 
     switch (error.response?.status) {
       case 400:
-        return 'Datos inválidos';
+        return "Datos inválidos";
       case 401:
-        return 'No autorizado. Por favor inicia sesión nuevamente';
+        return "No autorizado. Por favor inicia sesión nuevamente";
       case 403:
-        return 'No tienes permisos para realizar esta acción';
+        return "No tienes permisos para realizar esta acción";
       case 404:
-        return 'Recurso no encontrado';
+        return "Recurso no encontrado";
       case 429:
-        return 'Demasiadas solicitudes. Intenta más tarde';
+        return "Demasiadas solicitudes. Intenta más tarde";
       case 500:
-        return 'Error interno del servidor';
+        return "Error interno del servidor";
       default:
-        return error.message || 'Error de conexión';
+        return error.message || "Error de conexión";
     }
   }
 
   // Typing Tests
   async createTest(data: CreateTestDto): Promise<TestResult> {
-    const response = await this.api.post('/typing', data);
+    const response = await this.api.post("/typing", data);
     return response.data;
   }
 
   async getTests(limit?: number): Promise<TestResult[]> {
     const params = limit ? { limit } : {};
-    const response = await this.api.get('/typing', { params });
+    const response = await this.api.get("/typing", { params });
     return response.data;
   }
 
   async getUserStats(): Promise<UserStats> {
-    const response = await this.api.get('/typing/stats');
+    const response = await this.api.get("/typing/stats");
     return response.data;
   }
 
   // User Profile
   async getUserProfile(): Promise<UserProfile> {
-    const response = await this.api.get('/users/profile');
+    const response = await this.api.get("/users/profile");
     return response.data;
   }
 
   // Leaderboards (public endpoints)
   async getWpmLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
-    const response = await this.api.get('/leaderboard/wpm', {
+    const response = await this.api.get("/leaderboard/wpm", {
       params: { limit },
     });
     return response.data;
   }
 
-  async getAccuracyLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
-    const response = await this.api.get('/leaderboard/accuracy', {
+  async getAccuracyLeaderboard(
+    limit: number = 10
+  ): Promise<LeaderboardEntry[]> {
+    const response = await this.api.get("/leaderboard/accuracy", {
       params: { limit },
     });
     return response.data;
   }
 
   async getScoreLeaderboard(limit: number = 10): Promise<LeaderboardEntry[]> {
-    const response = await this.api.get('/leaderboard/score', {
+    const response = await this.api.get("/leaderboard/score", {
       params: { limit },
     });
     return response.data;
@@ -177,7 +132,11 @@ class ApiService {
 
   // Utility method to check if error is API error
   isApiError(error: any): error is ApiError {
-    return error && typeof error.status === 'number' && typeof error.message === 'string';
+    return (
+      error &&
+      typeof error.status === "number" &&
+      typeof error.message === "string"
+    );
   }
 }
 

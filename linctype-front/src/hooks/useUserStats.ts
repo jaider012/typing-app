@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useGetUserStats, useGetTests } from './useApi';
-import { useAuth } from './useAuth';
+import { useEffect, useCallback } from "react";
+import { useGetUserStats, useGetTests } from "./useApi";
+import { useAuth } from "./useAuth";
 
 export function useUserStats() {
   const { user } = useAuth();
@@ -11,19 +11,22 @@ export function useUserStats() {
     if (user) {
       statsApi.execute();
     }
-  }, [user]);
+  }, [user, statsApi.execute]);
 
-  const loadTests = async (limit?: number) => {
-    if (user) {
-      return testsApi.execute(limit);
-    }
-  };
+  const loadTests = useCallback(
+    async (limit?: number) => {
+      if (user) {
+        return testsApi.execute(limit);
+      }
+    },
+    [user, testsApi.execute]
+  );
 
-  const refreshStats = async () => {
+  const refreshStats = useCallback(async () => {
     if (user) {
       return statsApi.execute();
     }
-  };
+  }, [user, statsApi.execute]);
 
   return {
     stats: statsApi.data,

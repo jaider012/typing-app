@@ -46,7 +46,7 @@ export const system = createSystem(defaultConfig, {
       colors: {
         // Backgrounds
         bg: { value: { base: "#fffbe7", _dark: "#0f0f0f" } },
-        card: { value: { base: "#f9fafb", _dark: "#1e1e1e" } },
+        card: { value: { base: "#edecdc", _dark: "#1e1e1e" } },
         modal: { value: { base: "#ffffff", _dark: "#1e1e1e" } },
         textArea: { value: { base: "#f3f4f6", _dark: "#1a1a1a" } },
 

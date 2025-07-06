@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { apiService, ApiError } from '../services/api';
+import { apiService } from '../services/api';
 
 interface UseApiState<T> {
   data: T | null;
@@ -54,29 +54,36 @@ export function useApi<T>(
 
 // Specific hooks for common operations
 export function useCreateTest() {
-  return useApi(apiService.createTest.bind(apiService));
+  const apiFunction = useCallback((data: any) => apiService.createTest(data), []);
+  return useApi(apiFunction);
 }
 
 export function useGetTests() {
-  return useApi(apiService.getTests.bind(apiService));
+  const apiFunction = useCallback((limit?: number) => apiService.getTests(limit), []);
+  return useApi(apiFunction);
 }
 
 export function useGetUserStats() {
-  return useApi(apiService.getUserStats.bind(apiService));
+  const apiFunction = useCallback(() => apiService.getUserStats(), []);
+  return useApi(apiFunction);
 }
 
 export function useGetUserProfile() {
-  return useApi(apiService.getUserProfile.bind(apiService));
+  const apiFunction = useCallback(() => apiService.getUserProfile(), []);
+  return useApi(apiFunction);
 }
 
 export function useGetWpmLeaderboard() {
-  return useApi(apiService.getWpmLeaderboard.bind(apiService));
+  const apiFunction = useCallback((limit?: number) => apiService.getWpmLeaderboard(limit), []);
+  return useApi(apiFunction);
 }
 
 export function useGetAccuracyLeaderboard() {
-  return useApi(apiService.getAccuracyLeaderboard.bind(apiService));
+  const apiFunction = useCallback((limit?: number) => apiService.getAccuracyLeaderboard(limit), []);
+  return useApi(apiFunction);
 }
 
 export function useGetScoreLeaderboard() {
-  return useApi(apiService.getScoreLeaderboard.bind(apiService));
+  const apiFunction = useCallback((limit?: number) => apiService.getScoreLeaderboard(limit), []);
+  return useApi(apiFunction);
 }

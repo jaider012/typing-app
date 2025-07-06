@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { VStack, HStack, Box, Text, Spinner, Center } from '@chakra-ui/react';
 import { MainLayout } from '../../templates/MainLayout/MainLayout';
-import { ActionButton } from '../../atoms/ActionButton/ActionButton';
+import { ActionButton, UserAvatar } from '../../atoms';
 import { MotionBox } from '../../atoms/MotionBox';
 import {
   useGetWpmLeaderboard,
   useGetAccuracyLeaderboard,
   useGetScoreLeaderboard
 } from '../../../hooks/useApi';
-import { LeaderboardEntry } from '../../../services/api';
+import {  LeaderboardEntry } from '../../../services/types';
 
 type LeaderboardType = 'wpm' | 'accuracy' | 'score';
 
@@ -109,7 +109,7 @@ const LeaderboardTable: React.FC<{
 
                 {/* Avatar and Name */}
                 <HStack gap={3}>
-                  <Avatar
+                  <UserAvatar
                     src={entry.photoURL}
                     name={entry.displayName || 'Anonymous'}
                     size="sm"
@@ -164,7 +164,7 @@ export const LeaderboardPage: React.FC = () => {
     wpmLeaderboard.execute(10);
     accuracyLeaderboard.execute(10);
     scoreLeaderboard.execute(10);
-  }, []);
+  }, [wpmLeaderboard.execute, accuracyLeaderboard.execute, scoreLeaderboard.execute]);
 
   const getCurrentLeaderboard = () => {
     switch (activeTab) {
