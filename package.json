@@ -31,7 +31,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "start:dev": "GENERATE_SOURCEMAP=false TSC_COMPILE_ON_ERROR=true react-scripts start",
     "json-server": "json-server --watch db.json",
     "build": "react-scripts build",
     "test": "jest",

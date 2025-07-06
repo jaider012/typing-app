@@ -130,4 +130,4 @@ export const getIdToken = async (): Promise<string | null> => {
   }
 };
 
-export { type FirebaseUser };
+export type { FirebaseUser };
