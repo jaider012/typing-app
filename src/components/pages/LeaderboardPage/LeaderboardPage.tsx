@@ -162,8 +162,7 @@ export const LeaderboardPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { getWpmLeaderboard, getAccuracyLeaderboard, getScoreLeaderboard } =
-    useTypingService();
+  const typingService = useTypingService();
 
   useEffect(() => {
     const loadLeaderboards = async () => {
@@ -171,9 +170,9 @@ export const LeaderboardPage: React.FC = () => {
       setError(null);
       try {
         const [wpmResult, accuracyResult, scoreResult] = await Promise.all([
-          getWpmLeaderboard(10),
-          getAccuracyLeaderboard(10),
-          getScoreLeaderboard(10),
+          typingService.getWpmLeaderboard(10),
+          typingService.getAccuracyLeaderboard(10),
+          typingService.getScoreLeaderboard(10),
         ]);
         
         setWpmData(wpmResult || []);
@@ -187,7 +186,8 @@ export const LeaderboardPage: React.FC = () => {
     };
 
     loadLeaderboards();
-  }, [getWpmLeaderboard, getAccuracyLeaderboard, getScoreLeaderboard]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Solo ejecutar una vez al montar el componente
 
   const getCurrentLeaderboard = () => {
     switch (activeTab) {

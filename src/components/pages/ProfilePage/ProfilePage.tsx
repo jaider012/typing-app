@@ -17,6 +17,7 @@ import { TestResult, UserStats } from "../../../services/types";
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth();
+  const userStatsHook = useUserStats();
   const {
     stats,
     tests,
@@ -24,14 +25,14 @@ export const ProfilePage: React.FC = () => {
     loadingTests,
     statsError,
     testsError,
-    loadTests,
-  } = useUserStats();
+  } = userStatsHook;
 
   useEffect(() => {
     if (user) {
-      loadTests(10); // Load last 10 tests
+      userStatsHook.loadTests(10); // Load last 10 tests
     }
-  }, [user, loadTests]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]); // Solo depende del usuario
 
   if (!user) {
     return (
