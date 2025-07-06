@@ -9,8 +9,6 @@ const getCharacterColor = (
       return colorMode === "light" ? "#059669" : "#34d399";
     case "incorrect":
       return colorMode === "light" ? "#dc2626" : "#f87171";
-    case "current":
-      return colorMode === "light" ? "#d97706" : "#fcd34d";
     case "pending":
     default:
       return colorMode === "light" ? "#9ca3af" : "#6b7280";
@@ -23,7 +21,7 @@ const getCharacterBackground = (
 ): string => {
   switch (state) {
     case "incorrect":
-      return "#ef4444";
+      return "transparent";
     case "current":
       return colorMode === "light" ? "#60a5fa" : "#3b82f6";
     default:
@@ -62,7 +60,6 @@ const getCaretStyles = (caretStyle: CaretStyle, caretColor: string) => {
         height: "100%",
         backgroundColor: caretColor,
         left: "0",
-        borderRadius: "1px",
       };
     case "block":
       return {

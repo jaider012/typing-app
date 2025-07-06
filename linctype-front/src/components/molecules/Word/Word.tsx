@@ -41,8 +41,6 @@ export const Word: React.FC<WordProps> = ({
       py={isActive ? 0.5 : 0}
       bg={isActive ? activeBg : "transparent"}
       borderRadius="md"
-      border={isActive ? "1px solid" : "none"}
-      borderColor={isActive ? activeBorder : "transparent"}
       animate={{
         backgroundColor: isActive ? activeBg : "transparent",
         borderColor: isActive ? activeBorder : "transparent",

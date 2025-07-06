@@ -49,7 +49,7 @@ export const Character: React.FC<CharacterProps> = ({
       fontWeight={state === "current" ? "bold" : "normal"}
     >
       {char === " " ? "\u00A0" : char}
-      {showCaret && <Caret style={caretStyle} />}
+      {/* {showCaret && <Caret style={caretStyle} />} */}
     </MotionBox>
   );
 };
