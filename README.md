@@ -1,345 +1,309 @@
-# Plan de Desarrollo - Typing Speed Test App
-
-## 📋 Fase 1: Configuración del Proyecto
-
-### Backend (NestJS + TypeORM)
-
-- [ ] **Inicialización del proyecto**
-
-  - Crear proyecto NestJS con TypeScript
-  - Configurar TypeORM con base de datos (PostgreSQL/MySQL)
-  - Configurar variables de entorno
-  - Configurar Docker para desarrollo
-
-- [ ] **Configuración de autenticación**
-
-  - Instalar Passport, JWT, bcrypt
-  - Configurar JWT strategy
-  - Crear guards para protección de rutas
-  - Implementar refresh tokens
-
-- [ ] **Modelos de datos**
-
-  ```typescript
-  User {
-    id, email, username, password, createdAt, updatedAt
-  }
-
-  Test {
-    id, userId, wpm, accuracy, score, wordsTyped,
-    timeSpent, mistakes, text, createdAt
-  }
-
-  Leaderboard {
-    id, userId, bestWpm, bestAccuracy, bestScore,
-    totalTests, updatedAt
-  }
-  ```
-
-### Frontend (React + TypeScript)
-
-- [ ] **Configuración inicial**
-
-  - Crear proyecto con Vite + React + TypeScript
-  - Configurar Tailwind CSS
-  - Instalar Framer Motion
-  - Configurar Zustand o Context API para estado global
-  - Configurar React Router
-
-- [ ] **Estructura de carpetas**
-  ```
-  src/
-  ├── components/
-  ├── hooks/
-  ├── pages/
-  ├── store/
-  ├── types/
-  ├── utils/
-  └── services/
-  ```
-
-## 🎯 Fase 2: Funcionalidades Core
-
-### Typing Test Engine
-
-- [ ] **Componente principal TypingTest**
-
-  - Input handler sin mostrar caracteres
-  - Timer de 2 minutos
-  - Generador de texto aleatorio
-  - Detección de inicio automático
-
-- [ ] **Sistema de feedback visual**
-
-  - Caracteres verdes (#93C43F) para correctos
-  - Caracteres rojos (#F25151) para incorrectos
-  - Subrayado azul (#10ADE2) para siguiente carácter
-  - Animaciones suaves con Framer Motion
-
-- [ ] **Cálculos en tiempo real**
-  - WPM que inicie al empezar a escribir
-  - Accuracy tracking
-  - Contador de errores/deletes
-  - Score = (WPM _ Words Typed _ Accuracy) - Deletes
-
-### Hooks Personalizados
-
-- [ ] **useTypingTest**
-
-  ```typescript
-  const {
-    currentText,
-    userInput,
-    wpm,
-    accuracy,
-    timeLeft,
-    isActive,
-    isCompleted,
-    handleInput,
-    resetTest,
-    startTest,
-  } = useTypingTest();
-  ```
-
-- [ ] **useTimer**
-
-  ```typescript
-  const { timeLeft, isActive, start, pause, reset } = useTimer(120);
-  ```
-
-- [ ] **useKeyboard**
-  ```typescript
-  const { handleKeyDown, mistakes, correctChars } =
-    useKeyboard(onCharacterTyped);
-  ```
-
-## 🎨 Fase 3: UI/UX y Animaciones
-
-### Componentes Reutilizables
-
-- [ ] **Button Component**
-
-  - Variantes (primary, secondary, danger)
-  - Estados hover/focus con Motion
-  - Loading states
-
-- [ ] **TypingArea Component**
-
-  - Display del texto con highlighting
-  - Cursor animado
-  - Smooth transitions
-
-- [ ] **StatsCard Component**
-  - Mostrar WPM, Accuracy, Score
-  - Animaciones de números incrementales
-  - Gráficos simples con recharts
-
-### Animaciones con Framer Motion
-
-- [ ] **Transiciones de página**
-
-  - Page transitions suaves
-  - Stagger animations para listas
-  - Loading skeletons
-
-- [ ] **Micro-interacciones**
-  - Feedback táctil en botones
-  - Pulse animations para errores
-  - Success celebrations al completar
-
-## 🔐 Fase 4: Autenticación y Perfil
-
-### Sistema de Auth
-
-- [ ] **Páginas de autenticación**
-
-  - Login/Register forms
-  - Validación con react-hook-form + zod
-  - Manejo de errores
-
-- [ ] **Perfil de usuario**
-  - Dashboard con estadísticas
-  - Histórico de tests
-  - Configuraciones personales
-
-### API Integration
-
-- [ ] **Servicio de API**
-
-  ```typescript
-  class ApiService {
-    auth: AuthService;
-    tests: TestService;
-    users: UserService;
-    leaderboard: LeaderboardService;
-  }
-  ```
-
-- [ ] **Manejo de estados**
-  - Loading states
-  - Error boundaries
-  - Retry mechanisms
-
-## 📊 Fase 5: Features Avanzadas
-
-### Sistema de Puntuación
-
-- [ ] **Leaderboard global**
-
-  - Top WPM, Accuracy, Score
-  - Filtros por tiempo (día/semana/mes)
-  - Animaciones de rankings
-
-- [ ] **Progreso personal**
-  - Gráficos de mejora
-  - Achievements/badges
-  - Streak tracking
-
-### Configuraciones
-
-- [ ] **Personalización**
-  - Temas (dark/light mode)
-  - Configuración de texto
-  - Sonidos (opcional)
-
-## 🧪 Fase 6: Testing
-
-### Frontend Testing
-
-- [ ] **Unit Tests con Vitest**
-
-  - Custom hooks testing
-  - Component behavior testing
-  - Utility functions testing
-
-- [ ] **Integration Tests**
-  - User flows completos
-  - API integration tests
-  - E2E con Playwright
-
-### Backend Testing
-
-- [ ] **Unit Tests con Jest**
-  - Service layer testing
-  - Controller testing
-  - Authentication flow testing
-
-## 🚀 Fase 7: Deployment y Optimización
-
-### Performance
-
-- [ ] **Optimizaciones frontend**
-
-  - Code splitting
-  - Lazy loading
-  - Image optimization
-  - Bundle analysis
-
-- [ ] **Optimizaciones backend**
-  - Database indexing
-  - Query optimization
-  - Caching con Redis
-
-### Deployment
-
-- [ ] **Docker containerization**
-- [ ] **CI/CD pipeline**
-- [ ] **Monitoring y logs**
-
-## 🔗 Ideas para Webhooks
-
-### 1. Sistema de Notificaciones
-
+# LincType - Typing Speed Test App
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Chakra_UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" alt="Chakra UI" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios" />
+</p>
+
+## 📖 Descripción
+
+**LincType** es una aplicación moderna de typing test construida con React y TypeScript. Permite a los usuarios mejorar su velocidad de escritura con tests personalizables, seguimiento de progreso y un sistema de leaderboard competitivo.
+
+## ✨ Características Principales
+
+### 🎯 **Core Features**
+- ⌨️ **Tests de Escritura**: Múltiples modos (tiempo, palabras, citas)
+- 📊 **Métricas en Tiempo Real**: WPM, precisión, errores
+- 🎨 **Feedback Visual**: Colores dinámicos para caracteres correctos/incorrectos
+- ⏱️ **Configuración Flexible**: Tests de 15s, 30s, 60s, 120s
+- 🔄 **Reinicio Rápido**: Tab para reiniciar, Escape para cancelar
+
+### 🔐 **Autenticación**
+- 🔥 **Firebase Auth**: Login/registro seguro
+- 👤 **Perfiles de Usuario**: Estadísticas personales
+- 🔒 **Rutas Protegidas**: Contenido exclusivo para usuarios autenticados
+
+### 🏆 **Sistema de Progreso**
+- 📈 **Estadísticas Detalladas**: Historial de tests, mejores resultados
+- 🥇 **Leaderboard Global**: Rankings por WPM, precisión y puntuación
+- 🎯 **Sistema de Puntuación**: Algoritmo que considera velocidad, precisión y consistencia
+
+### 🎨 **Experiencia de Usuario**
+- 🌙 **Tema Oscuro**: Diseño moderno y cómodo para la vista
+- 📱 **Responsive**: Adaptado para desktop y móvil
+- ⚡ **Animaciones Suaves**: Transiciones fluidas con Framer Motion
+- 🎵 **Feedback Táctil**: Indicadores visuales y sonoros
+
+## 🛠️ Tecnologías Utilizadas
+
+### **Frontend Core**
+- **React 18** - Biblioteca de UI con hooks modernos
+- **TypeScript** - Tipado estático para mejor desarrollo
+- **Vite** - Build tool rápido y moderno
+
+### **UI/UX**
+- **Chakra UI** - Biblioteca de componentes accesibles
+- **Framer Motion** - Animaciones y transiciones
+- **React Router** - Navegación SPA
+
+### **Estado y Datos**
+- **React Context** - Manejo de estado global
+- **Custom Hooks** - Lógica reutilizable
+- **Axios** - Cliente HTTP para API
+
+### **Autenticación**
+- **Firebase Auth** - Autenticación segura
+- **JWT** - Tokens de acceso
+
+### **Testing**
+- **Jest** - Framework de testing
+- **React Testing Library** - Testing de componentes
+- **Vitest** - Testing unitario rápido
+
+## 🚀 Instalación y Configuración
+
+### **Prerrequisitos**
+```bash
+Node.js >= 18.0.0
+npm >= 8.0.0
+```
+
+### **Instalación**
+```bash
+# Clonar el repositorio
+git clone <repository-url>
+cd linctype-front
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env.local
+# Editar .env.local con tus credenciales de Firebase
+```
+
+### **Variables de Entorno**
+```env
+# Firebase Configuration
+REACT_APP_FIREBASE_API_KEY=your-api-key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=123456789
+REACT_APP_FIREBASE_APP_ID=1:123456789:web:abcdef
+
+# API Configuration
+REACT_APP_API_URL=http://localhost:3001/api
+```
+
+## 🎮 Uso
+
+### **Desarrollo**
+```bash
+# Iniciar servidor de desarrollo
+npm run dev
+
+# Ejecutar tests
+npm run test
+
+# Ejecutar tests en modo watch
+npm run test:watch
+
+# Build para producción
+npm run build
+
+# Preview del build
+npm run preview
+```
+
+### **Linting y Formateo**
+```bash
+# Ejecutar linter
+npm run lint
+
+# Formatear código
+npm run format
+
+# Verificar tipos TypeScript
+npm run type-check
+```
+
+## 📁 Estructura del Proyecto
+
+```
+src/
+├── components/           # Componentes reutilizables
+│   ├── atoms/           # Componentes básicos
+│   │   ├── ActionButton/
+│   │   ├── Character/
+│   │   ├── MotionBox/
+│   │   ├── StatCard/
+│   │   └── UserAvatar/
+│   ├── molecules/       # Componentes compuestos
+│   │   ├── LoginForm/
+│   │   ├── SignUpForm/
+│   │   ├── StatsBar/
+│   │   ├── TestConfigBar/
+│   │   └── Word/
+│   ├── organisms/       # Componentes complejos
+│   │   ├── AuthModal/
+│   │   ├── Navigation/
+│   │   ├── ProtectedRoute/
+│   │   ├── TestResults/
+│   │   └── TypingArea/
+│   ├── pages/          # Páginas principales
+│   │   ├── LeaderboardPage/
+│   │   ├── ProfilePage/
+│   │   └── TypingTestPage/
+│   └── templates/      # Layouts
+│       └── MainLayout/
+├── hooks/              # Custom hooks
+│   ├── useAuth.ts
+│   ├── useHttp.ts
+│   ├── useTimer.ts
+│   ├── useTypingTest.ts
+│   └── useUserStats.ts
+├── services/           # Servicios externos
+│   ├── api.ts
+│   ├── firebase.ts
+│   └── types.ts
+├── types/              # Definiciones de tipos
+│   ├── auth.ts
+│   ├── settings.ts
+│   ├── test.ts
+│   └── user.ts
+├── utils/              # Utilidades
+│   ├── characterColor.ts
+│   └── wordGenerator.ts
+├── contexts/           # Context providers
+│   └── AuthContext.tsx
+└── theme/              # Configuración de tema
+    └── index.ts
+```
+
+## 🧪 Testing
+
+### **Ejecutar Tests**
+```bash
+# Tests unitarios
+npm run test
+
+# Tests con coverage
+npm run test:coverage
+
+# Tests específicos
+npm run test -- --testNamePattern="useTypingTest"
+```
+
+### **Cobertura de Tests**
+- ✅ Custom hooks (useTypingTest, useAuth, useTimer)
+- ✅ Componentes principales (TypingArea, TestResults)
+- ✅ Utilidades (wordGenerator, characterColor)
+- ✅ Servicios (API, Firebase)
+
+## 🎯 Características Implementadas
+
+### ✅ **Completadas**
+- [x] Sistema de typing test con múltiples modos
+- [x] Cálculo preciso de WPM y precisión
+- [x] Autenticación con Firebase
+- [x] Perfil de usuario con estadísticas
+- [x] Leaderboard global con filtros
+- [x] Diseño responsive con Chakra UI
+- [x] Sistema de puntuación avanzado
+- [x] Feedback visual en tiempo real
+- [x] Guardado automático de resultados
+
+### 🚧 **En Desarrollo**
+- [ ] Modo competitivo multijugador
+- [ ] Achievements y badges
+- [ ] Configuraciones personalizadas
+- [ ] Análisis detallado de errores
+- [ ] Integración con redes sociales
+
+### 💡 **Futuras Mejoras**
+- [ ] PWA (Progressive Web App)
+- [ ] Modo offline
+- [ ] Estadísticas avanzadas con gráficos
+- [ ] Sistema de amigos
+- [ ] Desafíos diarios
+- [ ] Soporte para múltiples idiomas
+
+## 🔧 Configuración Avanzada
+
+### **Personalización de Tema**
 ```typescript
-// Cuando alguien supera tu record
-webhook: "user_record_beaten"
-payload: {
-  userId: "123",
-  previousRecord: 85,
-  newRecord: 92,
-  beatByUser: "john_doe"
-}
+// src/theme/index.ts
+export const customTheme = {
+  colors: {
+    primary: '#10ADE2',
+    secondary: '#93C43F',
+    error: '#F25151',
+    // ... más colores
+  },
+  // ... más configuraciones
+};
 ```
 
-### 2. Achievements System
-
+### **Configuración de Tests**
 ```typescript
-// Al desbloquear logros
-webhook: "achievement_unlocked"
-payload: {
-  userId: "123",
-  achievement: "speed_demon", // 100+ WPM
-  unlockedAt: "2025-07-04T10:00:00Z"
-}
+// src/utils/wordGenerator.ts
+export const testConfigurations = {
+  time: [15, 30, 60, 120],
+  words: [10, 25, 50, 100],
+  difficulty: ['easy', 'medium', 'hard'],
+};
 ```
 
-### 3. Daily Challenges
+## 🤝 Contribución
 
-```typescript
-// Completar desafío diario
-webhook: "daily_challenge_completed"
-payload: {
-  userId: "123",
-  challengeId: "daily_2025_07_04",
-  score: 1250,
-  rank: 15
-}
-```
+### **Proceso de Contribución**
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-caracteristica`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva característica'`)
+4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+5. Abre un Pull Request
 
-### 4. Social Features
+### **Estándares de Código**
+- Usar TypeScript estricto
+- Seguir convenciones de naming
+- Escribir tests para nuevas funcionalidades
+- Mantener cobertura de tests > 80%
+- Documentar componentes complejos
 
-```typescript
-// Seguir progreso de amigos
-webhook: "friend_milestone_reached"
-payload: {
-  userId: "123",
-  friendId: "456",
-  milestone: "1000_tests_completed"
-}
-```
+### **Reportar Bugs**
+- Usar el template de issues
+- Incluir pasos para reproducir
+- Especificar navegador y versión
+- Adjuntar screenshots si es necesario
 
-### 5. Integración con Discord/Slack
+## 📊 Métricas y Análisis
 
-```typescript
-// Enviar estadísticas a canales
-webhook: "weekly_stats_summary"
-payload: {
-  userId: "123",
-  weeklyStats: {
-    testsCompleted: 25,
-    avgWpm: 78,
-    improvement: "+5 WPM"
-  }
-}
-```
+### **Performance**
+- ⚡ **First Contentful Paint**: < 1.5s
+- ⚡ **Time to Interactive**: < 3s
+- ⚡ **Bundle Size**: < 500KB gzipped
 
-### 6. Moderación Automática
+### **Accesibilidad**
+- ♿ **WCAG 2.1 AA** compliant
+- ⌨️ **Keyboard Navigation** completo
+- 🎨 **Color Contrast** optimizado
 
-```typescript
-// Detectar posibles trampas
-webhook: "suspicious_activity_detected"
-payload: {
-  userId: "123",
-  reason: "impossible_wpm_jump",
-  details: { previousBest: 60, currentTest: 150 }
-}
-```
+## 📄 Licencia
 
-## 📁 Estructura Final del Proyecto
+Este proyecto está bajo la licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-```
-typing-app/
-│   ├── frontend/          # React app
-│   └── backend/           # NestJS API
-├── docker-compose.yml
-└── README.md
-```
+## 📞 Contacto y Soporte
 
-## ⏱️ Timeline Estimado
+- **Issues**: [GitHub Issues](https://github.com/tu-usuario/linctype-front/issues)
+- **Documentación**: [Wiki del proyecto](https://github.com/tu-usuario/linctype-front/wiki)
+- **Email**: tu-email@ejemplo.com
 
-- **Fase 1-2**: 1-2 semanas (Setup + Core)
-- **Fase 3-4**: 1-2 semanas (UI + Auth)
-- **Fase 5**: 1 semana (Features avanzadas)
-- **Fase 6-7**: 1 semana (Testing + Deploy)
+---
 
-**Total**: 4-6 semanas para MVP completo
+<p align="center">
+  Hecho con ❤️ para la comunidad de typing enthusiasts
+</p>

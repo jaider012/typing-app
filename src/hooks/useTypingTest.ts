@@ -84,9 +84,18 @@ export const useTypingTest = () => {
   const wpm = useMemo(() => {
     if (!state.startTime) return 0;
 
-    const timeElapsed = (Date.now() - state.startTime) / 1000 / 60; // in minutes
-    // Minimum time of 3 seconds to avoid crazy high WPM values
-    if (timeElapsed < 0.05) return 0; // Less than 3 seconds
+    // Calculate time elapsed based on test mode
+    let timeElapsedSeconds = 0;
+    if (testMode === "time") {
+      // For time mode, use configured time minus remaining time
+      timeElapsedSeconds = testTime - timeLeft;
+    } else {
+      // For words/quote mode, use actual elapsed time
+      timeElapsedSeconds = (Date.now() - state.startTime) / 1000;
+    }
+
+    // Minimum time of 2 seconds to avoid crazy high WPM values
+    if (timeElapsedSeconds < 2) return 0;
 
     // Calculate total characters typed (including spaces between completed words)
     const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
@@ -96,12 +105,14 @@ export const useTypingTest = () => {
     
     const totalCharsTyped = completedChars + spacesTyped + currentWordChars;
     
+    if (totalCharsTyped === 0) return 0;
+    
     // Standard WPM formula: (characters typed / 5) / minutes
-    const calculatedWpm = (totalCharsTyped / 5) / timeElapsed;
+    const calculatedWpm = (totalCharsTyped / 5) / (timeElapsedSeconds / 60);
     
     // Cap WPM at reasonable maximum (300 WPM is extremely fast)
     return Math.round(Math.min(calculatedWpm, 300));
-  }, [state.startTime, state.completedWords, state.userInput]);
+  }, [state.startTime, state.completedWords, state.userInput, testMode, testTime, timeLeft]);
 
   // Calculate accuracy
   const accuracy = useMemo(() => {
@@ -354,22 +365,37 @@ export const useTypingTest = () => {
 
   // Calculate final results
   const results: TestResult = useMemo(() => {
-    const timeSpent = state.startTime
-      ? (Date.now() - state.startTime) / 1000
-      : 0;
+    // Calculate actual time spent based on test mode
+    let timeSpent = 0;
+    if (state.startTime) {
+      if (testMode === "time") {
+        // For time mode, use the configured test time minus remaining time
+        timeSpent = testTime - timeLeft;
+        // If test is completed, use full test time
+        if (state.isCompleted) {
+          timeSpent = testTime;
+        }
+      } else {
+        // For words/quote mode, use actual elapsed time
+        timeSpent = (Date.now() - state.startTime) / 1000;
+      }
+    }
+    
     const wordsTyped = state.completedWords.length;
     
-    // Use the same WPM calculation as the real-time one for consistency
+    // Calculate WPM with proper time handling
     let finalWpm = 0;
-    if (timeSpent > 3) { // Minimum 3 seconds for realistic WPM
+    if (timeSpent > 1) { // Minimum 1 second for realistic WPM
       const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
       // Only count spaces for completed words
       const spacesTyped = state.completedWords.length;
       const totalCharsTyped = completedChars + spacesTyped;
       
-      const calculatedWpm = (totalCharsTyped / 5) / (timeSpent / 60);
-      // Cap WPM at reasonable maximum (300 WPM is extremely fast)
-      finalWpm = Math.round(Math.min(calculatedWpm, 300));
+      if (totalCharsTyped > 0) {
+        const calculatedWpm = (totalCharsTyped / 5) / (timeSpent / 60);
+        // Cap WPM at reasonable maximum (300 WPM is extremely fast)
+        finalWpm = Math.round(Math.min(calculatedWpm, 300));
+      }
     }
     
     // Calculate first strike accuracy (accuracy before corrections)
@@ -399,7 +425,7 @@ export const useTypingTest = () => {
       firstStrikeErrors,
       firstStrikeAccuracy,
     };
-  }, [state, accuracy, firstStrikeErrors]);
+  }, [state, accuracy, firstStrikeErrors, testMode, testTime, timeLeft]);
 
   // Save test result to backend
   const saveResult = useCallback(async () => {
