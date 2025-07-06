@@ -85,17 +85,22 @@ export const useTypingTest = () => {
     if (!state.startTime) return 0;
 
     const timeElapsed = (Date.now() - state.startTime) / 1000 / 60; // in minutes
-    if (timeElapsed === 0) return 0;
+    // Minimum time of 3 seconds to avoid crazy high WPM values
+    if (timeElapsed < 0.05) return 0; // Less than 3 seconds
 
     // Calculate total characters typed (including spaces between completed words)
     const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
-    const spacesTyped = state.completedWords.length > 0 ? state.completedWords.length : 0;
+    // Only count spaces for completed words (not including current word)
+    const spacesTyped = state.completedWords.length;
     const currentWordChars = state.userInput.length;
     
     const totalCharsTyped = completedChars + spacesTyped + currentWordChars;
     
     // Standard WPM formula: (characters typed / 5) / minutes
-    return Math.round((totalCharsTyped / 5) / timeElapsed);
+    const calculatedWpm = (totalCharsTyped / 5) / timeElapsed;
+    
+    // Cap WPM at reasonable maximum (300 WPM is extremely fast)
+    return Math.round(Math.min(calculatedWpm, 300));
   }, [state.startTime, state.completedWords, state.userInput]);
 
   // Calculate accuracy
@@ -356,11 +361,15 @@ export const useTypingTest = () => {
     
     // Use the same WPM calculation as the real-time one for consistency
     let finalWpm = 0;
-    if (timeSpent > 0) {
+    if (timeSpent > 3) { // Minimum 3 seconds for realistic WPM
       const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
-      const spacesTyped = state.completedWords.length > 0 ? state.completedWords.length : 0;
+      // Only count spaces for completed words
+      const spacesTyped = state.completedWords.length;
       const totalCharsTyped = completedChars + spacesTyped;
-      finalWpm = Math.round((totalCharsTyped / 5) / (timeSpent / 60));
+      
+      const calculatedWpm = (totalCharsTyped / 5) / (timeSpent / 60);
+      // Cap WPM at reasonable maximum (300 WPM is extremely fast)
+      finalWpm = Math.round(Math.min(calculatedWpm, 300));
     }
     
     // Calculate first strike accuracy (accuracy before corrections)
