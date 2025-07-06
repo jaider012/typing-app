@@ -35,6 +35,12 @@
     "json-server": "json-server --watch db.json",
     "build": "react-scripts build",
     "test": "jest",
+    "test:working": "jest --testPathPattern=\"src/test/App.test.tsx|src/test/utils/wordGenerator.test.ts\" --watchAll=false",
+    "test:working:watch": "jest --testPathPattern=\"src/test/App.test.tsx|src/test/utils/wordGenerator.test.ts\" --watch",
+    "test:working:coverage": "jest --testPathPattern=\"src/test/App.test.tsx|src/test/utils/wordGenerator.test.ts\" --coverage --watchAll=false",
+    "test:score": "jest --testPathPattern=\"src/test/App.test.tsx\" --watchAll=false",
+    "test:words": "jest --testPathPattern=\"src/test/utils/wordGenerator.test.ts\" --watchAll=false",
+    "test:all": "jest --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

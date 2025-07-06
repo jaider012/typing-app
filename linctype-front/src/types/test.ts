@@ -15,6 +15,7 @@ export interface TestResult {
   text: string;
   consistency: number;
   createdAt: string;
+  firstStrikeAccuracy: number;
 }
 
 export interface TestConfig {

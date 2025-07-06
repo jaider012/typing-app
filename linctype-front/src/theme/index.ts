@@ -48,7 +48,7 @@ export const system = createSystem(defaultConfig, {
         bg: { value: { base: "#fffbe7", _dark: "#0f0f0f" } },
         card: { value: { base: "#edecdc", _dark: "#1e1e1e" } },
         modal: { value: { base: "#ffffff", _dark: "#1e1e1e" } },
-        textArea: { value: { base: "#f3f4f6", _dark: "#1a1a1a" } },
+        textArea: { value: { base: "#fffbe7", _dark: "#1a1a1a" } },
 
         // Text
         main: { value: { base: "#1f2937", _dark: "#f3f4f6" } },
@@ -57,7 +57,7 @@ export const system = createSystem(defaultConfig, {
         // Borders & UI
         border: { value: { base: "#e5e7eb", _dark: "#374151" } },
         caret: { value: { base: "#f59e0b", _dark: "#fbbf24" } },
-        wordActive: { value: { base: "#f3f4f6", _dark: "#374151" } },
+        wordActive: { value: { base: "#edecdc", _dark: "#374151" } },
 
         // Typing character states
         correct: { value: { base: "#10b981", _dark: "#34d399" } },

@@ -6,6 +6,7 @@ import { useCreateTest } from "./useApi";
 import { CreateTestDto } from "../services/types";
 import { generateWords, generateQuote } from "../utils/wordGenerator";
 import { createToaster } from "@chakra-ui/react";
+import calculateScore from "../calculateScore";
 
 const toaster = createToaster({
   placement: "top",
@@ -34,6 +35,9 @@ export const useTypingTest = () => {
     errors: 0,
     mistakePositions: new Set(),
   });
+
+  // Track first strike errors separately (errors before corrections)
+  const [firstStrikeErrors, setFirstStrikeErrors] = useState(0);
 
   // Timer hook
   const { timeLeft, start: startTimer, reset: resetTimer } = useTimer(testTime);
@@ -68,6 +72,7 @@ export const useTypingTest = () => {
       errors: 0,
       mistakePositions: new Set(),
     }));
+    setFirstStrikeErrors(0);
   }, [testMode]);
 
   // Generate initial words
@@ -168,12 +173,16 @@ export const useTypingTest = () => {
           if (typedWord !== currentWord) {
             // Count character differences as errors
             const maxLength = Math.max(typedWord.length, currentWord.length);
+            let wordFirstStrikeErrors = 0;
             for (let i = 0; i < maxLength; i++) {
               if (typedWord[i] !== currentWord[i]) {
                 newErrors++;
                 newMistakePositions.add(`${prev.currentWordIndex}-${i}`);
+                wordFirstStrikeErrors++;
               }
             }
+            // Add first strike errors for this word
+            setFirstStrikeErrors(prev => prev + wordFirstStrikeErrors);
           }
 
           // Check if test is complete
@@ -252,6 +261,8 @@ export const useTypingTest = () => {
           ) {
             newErrors++;
             newMistakePositions.add(`${prev.currentWordIndex}-${newCharIndex}`);
+            // Track first strike error (error on first attempt)
+            setFirstStrikeErrors(prev => prev + 1);
           }
         } else if (value.length < prev.userInput.length) {
           // Handle backspacing - remove error marks for characters being deleted
@@ -259,6 +270,7 @@ export const useTypingTest = () => {
             if (newMistakePositions.has(`${prev.currentWordIndex}-${i}`)) {
               newMistakePositions.delete(`${prev.currentWordIndex}-${i}`);
               newErrors--;
+              // Note: We don't reduce firstStrikeErrors on backspace as they represent initial mistakes
             }
           }
         }
@@ -285,6 +297,7 @@ export const useTypingTest = () => {
   const resetTest = useCallback(() => {
     resetTimer(testTime);
     generateNewWords();
+    setFirstStrikeErrors(0);
   }, [resetTimer, testTime, generateNewWords]);
 
   // Handle key events
@@ -350,7 +363,15 @@ export const useTypingTest = () => {
       finalWpm = Math.round((totalCharsTyped / 5) / (timeSpent / 60));
     }
     
-    const score = Math.round(finalWpm * accuracy * (accuracy / 100));
+    // Calculate first strike accuracy (accuracy before corrections)
+    const totalCharsTyped = state.completedWords.join("").length + state.userInput.length;
+    const firstStrikeAccuracy = totalCharsTyped > 0 
+      ? Math.round(((totalCharsTyped - firstStrikeErrors) / totalCharsTyped) * 100)
+      : 100;
+    
+    // Use the calculateScore function from calculateScore.ts
+    const score = Math.round(calculateScore(wordsTyped, finalWpm, accuracy, firstStrikeAccuracy));
+    
     const consistencyScore = wordsTyped > 0 
       ? Math.max(0, 100 - (state.mistakePositions.size / wordsTyped) * 100)
       : 100;
@@ -366,8 +387,10 @@ export const useTypingTest = () => {
       text: state.words.slice(0, state.currentWordIndex).join(" "),
       consistency: Math.round(consistencyScore),
       createdAt: new Date().toISOString(),
+      firstStrikeErrors,
+      firstStrikeAccuracy,
     };
-  }, [state, accuracy]);
+  }, [state, accuracy, firstStrikeErrors]);
 
   // Save test result to backend
   const saveResult = useCallback(async () => {

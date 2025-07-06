@@ -33,9 +33,6 @@ export const Character: React.FC<CharacterProps> = ({
       color={getCharacterColor(state, colorMode)}
       bg={getCharacterBackground(state, colorMode)}
       opacity={getCharacterOpacity(state)}
-      borderRadius={
-        state === "incorrect" || state === "current" ? "sm" : "none"
-      }
       px={state === "incorrect" || state === "current" ? "2px" : "0"}
       py={state === "current" ? "1px" : "0"}
       initial={{ opacity: getCharacterOpacity(state) }}

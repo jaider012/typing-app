@@ -39,7 +39,6 @@ export const TypingTestPage: React.FC = () => {
 
     // Save state
     isSaving,
-    saveError,
     canSave,
   } = useTypingTest();
 
@@ -95,11 +94,7 @@ export const TypingTestPage: React.FC = () => {
         )}
 
         {isActive && (
-          <ActionButton
-            variant="solid"
-            onClick={resetTest}
-            size="sm"
-          >
+          <ActionButton variant="solid" onClick={resetTest} size="sm">
             Restart (Tab)
           </ActionButton>
         )}
@@ -112,10 +107,19 @@ export const TypingTestPage: React.FC = () => {
           onSave={canSave ? saveResult : undefined}
           isSaving={isSaving}
         />
-        
+
         {/* Debug info - remove in production */}
-        {process.env.NODE_ENV === 'development' && (
-          <Box position="fixed" top="10px" right="10px" bg="blackAlpha.800" color="white" p={2} borderRadius="md" fontSize="xs">
+        {process.env.NODE_ENV === "development" && (
+          <Box
+            position="fixed"
+            top="10px"
+            right="10px"
+            bg="blackAlpha.800"
+            color="white"
+            p={2}
+            borderRadius="md"
+            fontSize="xs"
+          >
             <div>Active: {isActive.toString()}</div>
             <div>Completed: {isCompleted.toString()}</div>
             <div>Time Left: {timeLeft}</div>
