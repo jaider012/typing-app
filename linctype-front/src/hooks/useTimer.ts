@@ -1,36 +1,60 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 export const useTimer = (initialTime: number) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const initialTimeRef = useRef(initialTime);
+
+  // Actualizar la referencia cuando cambie initialTime
+  useEffect(() => {
+    initialTimeRef.current = initialTime;
+    if (!isActive) {
+      setTimeLeft(initialTime);
+    }
+  }, [initialTime, isActive]);
 
   const start = useCallback(() => {
     setIsActive(true);
+    startTimeRef.current = Date.now();
   }, []);
 
   const pause = useCallback(() => {
     setIsActive(false);
-  }, []);
-
-  const reset = useCallback((newTime?: number) => {
-    setIsActive(false);
-    setTimeLeft(newTime ?? initialTime);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [initialTime]);
+  }, []);
+
+  const reset = useCallback((newTime?: number) => {
+    const resetTime = newTime ?? initialTimeRef.current;
+    setIsActive(false);
+    setTimeLeft(resetTime);
+    startTimeRef.current = null;
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
-    if (isActive && timeLeft > 0) {
+    if (isActive && startTimeRef.current) {
       intervalRef.current = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            setIsActive(false);
-            return 0;
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimeRef.current!) / 1000);
+        const newTimeLeft = Math.max(0, initialTimeRef.current - elapsed);
+        
+        setTimeLeft(prevTime => {
+          // Solo actualizar si realmente cambió
+          if (prevTime !== newTimeLeft) {
+            if (newTimeLeft === 0) {
+              setIsActive(false);
+            }
+            return newTimeLeft;
           }
-          return prev - 1;
+          return prevTime;
         });
       }, 1000);
     } else {
@@ -43,23 +67,27 @@ export const useTimer = (initialTime: number) => {
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [isActive, timeLeft]);
+  }, [isActive]);
 
-  // Update timeLeft when initialTime changes
-  useEffect(() => {
-    if (!isActive) {
-      setTimeLeft(initialTime);
-    }
-  }, [initialTime, isActive]);
+  // Memoizar valores calculados para evitar re-renders innecesarios
+  const memoizedValues = useMemo(() => ({
+    isCompleted: timeLeft === 0,
+  }), [timeLeft]);
+
+  // Memoizar funciones para evitar re-creación
+  const memoizedActions = useMemo(() => ({
+    start,
+    pause,
+    reset,
+  }), [start, pause, reset]);
 
   return {
     timeLeft,
     isActive,
-    isCompleted: timeLeft === 0,
-    start,
-    pause,
-    reset,
+    ...memoizedValues,
+    ...memoizedActions,
   };
 };
