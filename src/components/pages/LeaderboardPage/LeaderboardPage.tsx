@@ -164,20 +164,13 @@ export const LeaderboardPage: React.FC = () => {
   const wpmLeaderboard = useGetWpmLeaderboard();
   const accuracyLeaderboard = useGetAccuracyLeaderboard();
   const scoreLeaderboard = useGetScoreLeaderboard();
-  console.log(wpmLeaderboard, accuracyLeaderboard, scoreLeaderboard);
   useEffect(() => {
-    // Load leaderboards on mount
+    // Load leaderboards on mount - only once
     wpmLeaderboard.execute(10);
     accuracyLeaderboard.execute(10);
     scoreLeaderboard.execute(10);
-  }, [
-    wpmLeaderboard.execute,
-    accuracyLeaderboard.execute,
-    scoreLeaderboard.execute,
-    wpmLeaderboard,
-    accuracyLeaderboard,
-    scoreLeaderboard,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to run only on mount
 
   const getCurrentLeaderboard = () => {
     switch (activeTab) {
