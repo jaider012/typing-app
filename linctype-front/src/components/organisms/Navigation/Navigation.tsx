@@ -2,10 +2,10 @@ import React from "react";
 import { Box, Flex, HStack, Text, IconButton } from "@chakra-ui/react";
 import { ActionButton } from "../../atoms";
 import { useColorMode } from "../../ui/color-mode";
-import { User } from "../../../types/user";
+import { AuthUser } from "../../../types/auth";
 
 interface NavigationProps {
-  user?: User;
+  user?: AuthUser;
   onThemeToggle: () => void;
   onSettingsOpen: () => void;
   onAuthAction: () => void;

@@ -106,23 +106,23 @@ export const useTypingTest = () => {
       let newErrors = prev.errors;
       const newMistakePositions = new Set(prev.mistakePositions);
 
-      // Check for new errors only when typing forward
-      if (value.length > prev.userInput.length) {
-        const newCharIndex = value.length - 1;
-        const typedChar = value[newCharIndex];
-        const expectedChar = currentWord[newCharIndex];
-        
-        if (typedChar !== expectedChar) {
-          newErrors++;
-          newMistakePositions.add(`${prev.currentWordIndex}-${newCharIndex}`);
-        }
-      }
-
-      // Handle space key - move to next word
+      // Handle space key - advance to next word regardless of correctness
       if (value.endsWith(' ')) {
         const typedWord = value.slice(0, -1); // Remove the space
         const newCompletedWords = [...prev.completedWords, typedWord];
         const newCurrentWordIndex = prev.currentWordIndex + 1;
+
+        // If the word is incorrect, add errors for missing or extra characters
+        if (typedWord !== currentWord) {
+          // Count character differences as errors
+          const maxLength = Math.max(typedWord.length, currentWord.length);
+          for (let i = 0; i < maxLength; i++) {
+            if (typedWord[i] !== currentWord[i]) {
+              newErrors++;
+              newMistakePositions.add(`${prev.currentWordIndex}-${i}`);
+            }
+          }
+        }
 
         // Check if test is complete
         if (newCurrentWordIndex >= prev.words.length || (testMode === 'words' && newCurrentWordIndex >= 50)) {
@@ -150,19 +150,20 @@ export const useTypingTest = () => {
         };
       }
 
-      // Handle exact word completion without space
-      if (value === currentWord) {
-        // Don't auto-advance, wait for space
-        return {
-          ...prev,
-          userInput: value,
-          currentCharIndex: value.length,
-          errors: newErrors,
-          mistakePositions: newMistakePositions,
-        };
+      // Check for new errors only when typing forward (not backspacing)
+      if (value.length > prev.userInput.length) {
+        const newCharIndex = value.length - 1;
+        const typedChar = value[newCharIndex];
+        const expectedChar = currentWord[newCharIndex];
+        
+        // If typing beyond word length or character doesn't match
+        if (newCharIndex >= currentWord.length || typedChar !== expectedChar) {
+          newErrors++;
+          newMistakePositions.add(`${prev.currentWordIndex}-${newCharIndex}`);
+        }
       }
 
-      // Normal typing
+      // Normal typing - allow typing beyond word length
       return {
         ...prev,
         userInput: value,
@@ -173,28 +174,28 @@ export const useTypingTest = () => {
     });
   }, [startTimer, testMode]);
 
+  // Reset test
+  const resetTest = useCallback(() => {
+    resetTimer(testTime);
+    generateNewWords();
+  }, [resetTimer, testTime, generateNewWords]);
+
   // Handle key events
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     // Handle tab to restart
     if (e.key === 'Tab') {
       e.preventDefault();
       resetTest();
+      return;
     }
     
-    // Prevent certain keys during active test
-    if (state.isActive) {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        resetTest();
-      }
+    // Handle escape to restart during active test
+    if (e.key === 'Escape' && state.isActive) {
+      e.preventDefault();
+      resetTest();
+      return;
     }
-  }, [state.isActive]);
-
-  // Reset test
-  const resetTest = useCallback(() => {
-    resetTimer(testTime);
-    generateNewWords();
-  }, [resetTimer, testTime, generateNewWords]);
+  }, [state.isActive, resetTest]);
 
   // Check for timer completion
   useEffect(() => {
