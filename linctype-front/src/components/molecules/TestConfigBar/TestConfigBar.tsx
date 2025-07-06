@@ -20,7 +20,6 @@ export const TestConfigBar: React.FC<TestConfigBarProps> = ({
 }) => {
   const timeOptions = [15, 30, 60, 120];
   const modeOptions: TestMode[] = ["time", "words", "quote"];
-  console.log('se repite');
   return (
     <HStack gap={6} justify="center" mb={6} flexWrap="wrap">
       <HStack gap={2}>

@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
-import { ColorModeProvider } from './components/ui/color-mode';
-import { AuthProvider } from './contexts/AuthContext';
-import { TypingTestPage } from './components';
-import { ProfilePage } from './components/pages/ProfilePage';
-import { LeaderboardPage } from './components/pages/LeaderboardPage';
-import { system } from './theme';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+import { ColorModeProvider } from "./components/ui/color-mode";
+import { AuthProvider } from "./contexts/AuthContext";
+import { TypingTestPage } from "./components/pages/TypingTestPage/TypingTestPage";
+import { ProfilePage } from "./components/pages/ProfilePage";
+import { LeaderboardPage } from "./components/pages/LeaderboardPage";
+import { system } from "./theme";
 
 const App: React.FC = () => {
   return (

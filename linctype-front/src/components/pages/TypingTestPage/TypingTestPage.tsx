@@ -1,5 +1,5 @@
 import React from "react";
-import { VStack, HStack, Icon } from "@chakra-ui/react";
+import { VStack, HStack, Icon, Box } from "@chakra-ui/react";
 import { BiPlay, BiRefresh } from "react-icons/bi";
 import { MainLayout } from "../../templates/MainLayout/MainLayout";
 import { TypingArea, TestResults } from "../../organisms";
@@ -112,6 +112,17 @@ export const TypingTestPage: React.FC = () => {
           onSave={canSave ? saveResult : undefined}
           isSaving={isSaving}
         />
+        
+        {/* Debug info - remove in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <Box position="fixed" top="10px" right="10px" bg="blackAlpha.800" color="white" p={2} borderRadius="md" fontSize="xs">
+            <div>Active: {isActive.toString()}</div>
+            <div>Completed: {isCompleted.toString()}</div>
+            <div>Time Left: {timeLeft}</div>
+            <div>Words: {completedWords.length}</div>
+            <div>WPM: {wpm}</div>
+          </Box>
+        )}
       </VStack>
     </MainLayout>
   );

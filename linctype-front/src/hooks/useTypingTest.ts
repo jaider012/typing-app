@@ -75,19 +75,23 @@ export const useTypingTest = () => {
     generateNewWords();
   }, [testMode, generateNewWords]);
 
-  // Calculate WPM
+  // Calculate WPM using standard formula (characters typed / 5 / minutes)
   const wpm = useMemo(() => {
-    if (!state.startTime || !state.isActive) return 0;
+    if (!state.startTime) return 0;
 
     const timeElapsed = (Date.now() - state.startTime) / 1000 / 60; // in minutes
     if (timeElapsed === 0) return 0;
 
-    const correctWords = state.completedWords.filter(
-      (word, index) => word === state.words[index]
-    ).length;
-
-    return Math.round(correctWords / timeElapsed);
-  }, [state.startTime, state.isActive, state.completedWords, state.words]);
+    // Calculate total characters typed (including spaces between completed words)
+    const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
+    const spacesTyped = state.completedWords.length > 0 ? state.completedWords.length : 0;
+    const currentWordChars = state.userInput.length;
+    
+    const totalCharsTyped = completedChars + spacesTyped + currentWordChars;
+    
+    // Standard WPM formula: (characters typed / 5) / minutes
+    return Math.round((totalCharsTyped / 5) / timeElapsed);
+  }, [state.startTime, state.completedWords, state.userInput]);
 
   // Calculate accuracy
   const accuracy = useMemo(() => {
@@ -99,7 +103,7 @@ export const useTypingTest = () => {
     return Math.round((correctChars / totalChars) * 100);
   }, [state.completedWords, state.userInput, state.errors]);
 
-  // Handle input changes
+      // Handle input changes
   const handleInput = useCallback(
     (value: string) => {
       setState((prev) => {
@@ -113,6 +117,39 @@ export const useTypingTest = () => {
             userInput: value,
             currentCharIndex: value.length,
           };
+        }
+
+        // Handle backspace to previous word if current input is empty and we're not on first word
+        if (value === "" && prev.userInput === "" && prev.currentWordIndex > 0) {
+          const previousWordIndex = prev.currentWordIndex - 1;
+          const previousWord = prev.words[previousWordIndex];
+          const previousTypedWord = prev.completedWords[previousWordIndex];
+          
+          // Only allow going back if the previous word had errors
+          if (previousTypedWord !== previousWord) {
+            const newCompletedWords = [...prev.completedWords];
+            newCompletedWords.pop(); // Remove the last completed word
+            
+            // Remove error marks for the previous word
+            const newMistakePositions = new Set(prev.mistakePositions);
+            for (let i = 0; i < Math.max(previousTypedWord.length, previousWord.length); i++) {
+              newMistakePositions.delete(`${previousWordIndex}-${i}`);
+            }
+            
+            // Recalculate errors
+            let newErrors = 0;
+            newMistakePositions.forEach(() => newErrors++);
+            
+            return {
+              ...prev,
+              currentWordIndex: previousWordIndex,
+              userInput: previousTypedWord,
+              currentCharIndex: previousTypedWord.length,
+              completedWords: newCompletedWords,
+              errors: newErrors,
+              mistakePositions: newMistakePositions,
+            };
+          }
         }
 
         const currentWord = prev.words[prev.currentWordIndex];
@@ -168,6 +205,40 @@ export const useTypingTest = () => {
           };
         }
 
+        // Auto-advance when word is completed correctly (without space)
+        if (value === currentWord) {
+          const newCompletedWords = [...prev.completedWords, value];
+          const newCurrentWordIndex = prev.currentWordIndex + 1;
+
+          // Check if test is complete
+          if (
+            newCurrentWordIndex >= prev.words.length ||
+            (testMode === "words" && newCurrentWordIndex >= 50)
+          ) {
+            return {
+              ...prev,
+              completedWords: newCompletedWords,
+              userInput: "",
+              currentWordIndex: newCurrentWordIndex,
+              currentCharIndex: 0,
+              isCompleted: true,
+              isActive: false,
+              errors: newErrors,
+              mistakePositions: newMistakePositions,
+            };
+          }
+
+          return {
+            ...prev,
+            completedWords: newCompletedWords,
+            userInput: "",
+            currentWordIndex: newCurrentWordIndex,
+            currentCharIndex: 0,
+            errors: newErrors,
+            mistakePositions: newMistakePositions,
+          };
+        }
+
         // Check for new errors only when typing forward (not backspacing)
         if (value.length > prev.userInput.length) {
           const newCharIndex = value.length - 1;
@@ -182,9 +253,22 @@ export const useTypingTest = () => {
             newErrors++;
             newMistakePositions.add(`${prev.currentWordIndex}-${newCharIndex}`);
           }
+        } else if (value.length < prev.userInput.length) {
+          // Handle backspacing - remove error marks for characters being deleted
+          for (let i = value.length; i < prev.userInput.length; i++) {
+            if (newMistakePositions.has(`${prev.currentWordIndex}-${i}`)) {
+              newMistakePositions.delete(`${prev.currentWordIndex}-${i}`);
+              newErrors--;
+            }
+          }
         }
 
-        // Normal typing - allow typing beyond word length
+        // Prevent typing beyond the current word length (except for space)
+        if (value.length > currentWord.length && !value.endsWith(" ")) {
+          return prev; // Don't allow typing beyond word length
+        }
+
+        // Normal typing
         return {
           ...prev,
           userInput: value,
@@ -234,30 +318,42 @@ export const useTypingTest = () => {
     }
   }, [timeLeft, testMode, state.isActive]);
 
+  // Force completion check - ensure TestResults shows even if other conditions fail
+  useEffect(() => {
+    const shouldComplete = 
+      (testMode === "time" && timeLeft === 0 && state.startTime) ||
+      (testMode === "words" && state.completedWords.length >= 50) ||
+      (state.currentWordIndex >= state.words.length && state.words.length > 0);
+
+    if (shouldComplete && !state.isCompleted) {
+      setState((prev) => ({
+        ...prev,
+        isCompleted: true,
+        isActive: false,
+      }));
+    }
+  }, [testMode, timeLeft, state.startTime, state.completedWords.length, state.currentWordIndex, state.words.length, state.isCompleted]);
+
   // Calculate final results
   const results: TestResult = useMemo(() => {
-    if (!state.isCompleted) {
-      return {
-        wpm: 0,
-        accuracy: 0,
-        score: 0,
-        wordsTyped: 0,
-        timeSpent: 0,
-        mistakes: 0,
-        errors: 0,
-        text: "",
-        consistency: 0,
-        createdAt: new Date().toISOString(),
-      };
-    }
-
     const timeSpent = state.startTime
       ? (Date.now() - state.startTime) / 1000
       : 0;
     const wordsTyped = state.completedWords.length;
-    const finalWpm =
-      timeSpent > 0 ? Math.round(wordsTyped / (timeSpent / 60)) : 0;
-    const score = Math.round(finalWpm * accuracy * (wordsTyped / 100));
+    
+    // Use the same WPM calculation as the real-time one for consistency
+    let finalWpm = 0;
+    if (timeSpent > 0) {
+      const completedChars = state.completedWords.reduce((total, word) => total + word.length, 0);
+      const spacesTyped = state.completedWords.length > 0 ? state.completedWords.length : 0;
+      const totalCharsTyped = completedChars + spacesTyped;
+      finalWpm = Math.round((totalCharsTyped / 5) / (timeSpent / 60));
+    }
+    
+    const score = Math.round(finalWpm * accuracy * (accuracy / 100));
+    const consistencyScore = wordsTyped > 0 
+      ? Math.max(0, 100 - (state.mistakePositions.size / wordsTyped) * 100)
+      : 100;
 
     return {
       wpm: finalWpm,
@@ -267,11 +363,8 @@ export const useTypingTest = () => {
       timeSpent: Math.round(timeSpent),
       mistakes: state.mistakePositions.size,
       errors: state.errors,
-      text: state.words.slice(0, state.currentWordIndex + 1).join(" "),
-      consistency: Math.max(
-        0,
-        100 - (state.mistakePositions.size / wordsTyped) * 100
-      ),
+      text: state.words.slice(0, state.currentWordIndex).join(" "),
+      consistency: Math.round(consistencyScore),
       createdAt: new Date().toISOString(),
     };
   }, [state, accuracy]);
