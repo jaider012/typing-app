@@ -46,6 +46,9 @@ export interface LeaderboardEntry {
   photoURL?: string;
   value: number;
   rank: number;
+  wpm?: number;
+  accuracy?: number;
+  score?: number;
 }
 
 export interface ApiError {

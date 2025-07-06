@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useCallback } from "react";
 import { useGetUserStats, useGetTests } from "./useApi";
 import { useAuth } from "./useAuth";

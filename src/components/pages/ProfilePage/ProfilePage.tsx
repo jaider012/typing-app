@@ -1,12 +1,19 @@
-import React, { useEffect } from 'react';
-import { VStack, HStack, Box, Text, Grid, Spinner, Center } from '@chakra-ui/react';
-import { MainLayout } from '../../templates/MainLayout/MainLayout';
-import { StatCard } from '../../atoms';
-import { ResultMetric } from '../../molecules';
-import { MotionBox } from '../../atoms/MotionBox';
-import { useUserStats } from '../../../hooks/useUserStats';
-import { useAuth } from '../../../hooks/useAuth';
-import { TestResult } from '../../../services/types';
+import React, { useEffect } from "react";
+import {
+  VStack,
+  HStack,
+  Box,
+  Text,
+  Grid,
+  Spinner,
+  Center,
+} from "@chakra-ui/react";
+import { MainLayout } from "../../templates/MainLayout/MainLayout";
+import { StatCard } from "../../atoms";
+import { MotionBox } from "../../atoms/MotionBox";
+import { useUserStats } from "../../../hooks/useUserStats";
+import { useAuth } from "../../../hooks/useAuth";
+import { TestResult } from "../../../services/types";
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth();
@@ -18,7 +25,6 @@ export const ProfilePage: React.FC = () => {
     statsError,
     testsError,
     loadTests,
-    refreshStats
   } = useUserStats();
 
   useEffect(() => {
@@ -51,8 +57,13 @@ export const ProfilePage: React.FC = () => {
           transition={{ duration: 0.5 }}
         >
           <Box textAlign="center" p={6}>
-            <Text fontSize="3xl" fontWeight="bold" color="main" fontFamily="mono">
-              {user.displayName || 'Typing Enthusiast'}
+            <Text
+              fontSize="3xl"
+              fontWeight="bold"
+              color="main"
+              fontFamily="mono"
+            >
+              {user.displayName || "Typing Enthusiast"}
             </Text>
             <Text fontSize="md" color="sub" fontFamily="mono">
               {user.email}
@@ -67,10 +78,16 @@ export const ProfilePage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Box mb={6}>
-            <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono" mb={4}>
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              color="main"
+              fontFamily="mono"
+              mb={4}
+            >
               Statistics Overview
             </Text>
-            
+
             {loadingStats ? (
               <Center p={8}>
                 <Spinner size="lg" color="caret" />
@@ -82,7 +99,10 @@ export const ProfilePage: React.FC = () => {
                 </Text>
               </Box>
             ) : stats ? (
-              <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={6}>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+                gap={6}
+              >
                 <StatCard
                   label="Best WPM"
                   value={stats.bestWpm}
@@ -117,7 +137,8 @@ export const ProfilePage: React.FC = () => {
             ) : (
               <Box p={4} bg="card" borderRadius="md" textAlign="center">
                 <Text color="sub" fontFamily="mono">
-                  No statistics available yet. Complete some tests to see your stats!
+                  No statistics available yet. Complete some tests to see your
+                  stats!
                 </Text>
               </Box>
             )}
@@ -131,10 +152,16 @@ export const ProfilePage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Box>
-            <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono" mb={4}>
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              color="main"
+              fontFamily="mono"
+              mb={4}
+            >
               Recent Tests
             </Text>
-            
+
             {loadingTests ? (
               <Center p={8}>
                 <Spinner size="lg" color="caret" />
@@ -158,17 +185,25 @@ export const ProfilePage: React.FC = () => {
                   >
                     <HStack justify="space-between" mb={2}>
                       <Text fontSize="sm" color="sub" fontFamily="mono">
-                        {new Date(test.createdAt).toLocaleDateString()} at{' '}
+                        {new Date(test.createdAt).toLocaleDateString()} at{" "}
                         {new Date(test.createdAt).toLocaleTimeString()}
                       </Text>
                       <Text fontSize="sm" color="caret" fontFamily="mono">
                         Score: {test.score}
                       </Text>
                     </HStack>
-                    
-                    <Grid templateColumns="repeat(auto-fit, minmax(120px, 1fr))" gap={4}>
+
+                    <Grid
+                      templateColumns="repeat(auto-fit, minmax(120px, 1fr))"
+                      gap={4}
+                    >
                       <Box textAlign="center">
-                        <Text fontSize="lg" fontWeight="bold" color="main" fontFamily="mono">
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="main"
+                          fontFamily="mono"
+                        >
                           {test.wpm}
                         </Text>
                         <Text fontSize="xs" color="sub" fontFamily="mono">
@@ -176,7 +211,12 @@ export const ProfilePage: React.FC = () => {
                         </Text>
                       </Box>
                       <Box textAlign="center">
-                        <Text fontSize="lg" fontWeight="bold" color="main" fontFamily="mono">
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="main"
+                          fontFamily="mono"
+                        >
                           {test.accuracy}%
                         </Text>
                         <Text fontSize="xs" color="sub" fontFamily="mono">
@@ -184,7 +224,12 @@ export const ProfilePage: React.FC = () => {
                         </Text>
                       </Box>
                       <Box textAlign="center">
-                        <Text fontSize="lg" fontWeight="bold" color="main" fontFamily="mono">
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="main"
+                          fontFamily="mono"
+                        >
                           {test.wordsTyped}
                         </Text>
                         <Text fontSize="xs" color="sub" fontFamily="mono">
@@ -192,7 +237,12 @@ export const ProfilePage: React.FC = () => {
                         </Text>
                       </Box>
                       <Box textAlign="center">
-                        <Text fontSize="lg" fontWeight="bold" color="main" fontFamily="mono">
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="main"
+                          fontFamily="mono"
+                        >
                           {test.timeSpent}s
                         </Text>
                         <Text fontSize="xs" color="sub" fontFamily="mono">

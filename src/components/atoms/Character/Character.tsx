@@ -1,6 +1,5 @@
 import React from "react";
 import { CharacterState, CaretStyle } from "../../../types/test";
-import { Caret } from "../Caret/Caret";
 import { MotionBox } from "../MotionBox";
 import { useColorMode } from "../../ui/color-mode";
 import {

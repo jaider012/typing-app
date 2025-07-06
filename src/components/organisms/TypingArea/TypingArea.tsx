@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { Textarea, Text } from "@chakra-ui/react";
+import { Textarea } from "@chakra-ui/react";
 import { Word } from "../../molecules";
 import { MotionBox, MotionText } from "../../atoms";
 import { CaretStyle } from "../../../types/test";

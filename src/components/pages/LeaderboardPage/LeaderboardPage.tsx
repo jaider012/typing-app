@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { VStack, HStack, Box, Text, Spinner, Center } from '@chakra-ui/react';
-import { MainLayout } from '../../templates/MainLayout/MainLayout';
-import { ActionButton, UserAvatar } from '../../atoms';
-import { MotionBox } from '../../atoms/MotionBox';
+import React, { useState, useEffect } from "react";
+import { VStack, HStack, Box, Text, Spinner, Center } from "@chakra-ui/react";
+import { MainLayout } from "../../templates/MainLayout/MainLayout";
+import { ActionButton, UserAvatar } from "../../atoms";
+import { MotionBox } from "../../atoms/MotionBox";
 import {
   useGetWpmLeaderboard,
   useGetAccuracyLeaderboard,
-  useGetScoreLeaderboard
-} from '../../../hooks/useApi';
-import {  LeaderboardEntry } from '../../../services/types';
+  useGetScoreLeaderboard,
+} from "../../../hooks/useApi";
+import { LeaderboardEntry } from "../../../services/types";
 
-type LeaderboardType = 'wpm' | 'accuracy' | 'score';
+type LeaderboardType = "wpm" | "accuracy" | "score";
 
 const LeaderboardTable: React.FC<{
   entries: LeaderboardEntry[];
@@ -20,12 +20,12 @@ const LeaderboardTable: React.FC<{
 }> = ({ entries, loading, error, type }) => {
   const getValueDisplay = (entry: LeaderboardEntry, type: LeaderboardType) => {
     switch (type) {
-      case 'wpm':
-        return `${entry.value} WPM`;
-      case 'accuracy':
-        return `${entry.value}%`;
-      case 'score':
-        return `${entry.value} pts`;
+      case "wpm":
+        return `${entry.wpm} WPM`;
+      case "accuracy":
+        return `${entry.accuracy}%`;
+      case "score":
+        return `${entry.score} pts`;
       default:
         return entry.value.toString();
     }
@@ -33,14 +33,14 @@ const LeaderboardTable: React.FC<{
 
   const getIcon = (type: LeaderboardType) => {
     switch (type) {
-      case 'wpm':
-        return '⚡';
-      case 'accuracy':
-        return '🎯';
-      case 'score':
-        return '🏆';
+      case "wpm":
+        return "⚡";
+      case "accuracy":
+        return "🎯";
+      case "score":
+        return "🏆";
       default:
-        return '📊';
+        return "📊";
     }
   };
 
@@ -104,14 +104,20 @@ const LeaderboardTable: React.FC<{
                   fontWeight="bold"
                   fontFamily="mono"
                 >
-                  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : entry.rank}
+                  {index === 0
+                    ? "🥇"
+                    : index === 1
+                    ? "🥈"
+                    : index === 2
+                    ? "🥉"
+                    : entry.rank}
                 </Box>
 
                 {/* Avatar and Name */}
                 <HStack gap={3}>
                   <UserAvatar
                     src={entry.photoURL}
-                    name={entry.displayName || 'Anonymous'}
+                    name={entry.displayName || "Anonymous"}
                     size="sm"
                   />
                   <VStack align="start" gap={0}>
@@ -121,7 +127,7 @@ const LeaderboardTable: React.FC<{
                       color="main"
                       fontFamily="mono"
                     >
-                      {entry.displayName || 'Anonymous User'}
+                      {entry.displayName || "Anonymous User"}
                     </Text>
                     <Text fontSize="xs" color="sub" fontFamily="mono">
                       Rank #{entry.rank}
@@ -153,26 +159,33 @@ const LeaderboardTable: React.FC<{
 };
 
 export const LeaderboardPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<LeaderboardType>('wpm');
-  
+  const [activeTab, setActiveTab] = useState<LeaderboardType>("wpm");
+
   const wpmLeaderboard = useGetWpmLeaderboard();
   const accuracyLeaderboard = useGetAccuracyLeaderboard();
   const scoreLeaderboard = useGetScoreLeaderboard();
-
+  console.log(wpmLeaderboard, accuracyLeaderboard, scoreLeaderboard);
   useEffect(() => {
     // Load leaderboards on mount
     wpmLeaderboard.execute(10);
     accuracyLeaderboard.execute(10);
     scoreLeaderboard.execute(10);
-  }, [wpmLeaderboard.execute, accuracyLeaderboard.execute, scoreLeaderboard.execute]);
+  }, [
+    wpmLeaderboard.execute,
+    accuracyLeaderboard.execute,
+    scoreLeaderboard.execute,
+    wpmLeaderboard,
+    accuracyLeaderboard,
+    scoreLeaderboard,
+  ]);
 
   const getCurrentLeaderboard = () => {
     switch (activeTab) {
-      case 'wpm':
+      case "wpm":
         return wpmLeaderboard;
-      case 'accuracy':
+      case "accuracy":
         return accuracyLeaderboard;
-      case 'score':
+      case "score":
         return scoreLeaderboard;
       default:
         return wpmLeaderboard;
@@ -182,9 +195,9 @@ export const LeaderboardPage: React.FC = () => {
   const currentLeaderboard = getCurrentLeaderboard();
 
   const tabs = [
-    { id: 'wpm' as LeaderboardType, label: 'WPM', icon: '⚡' },
-    { id: 'accuracy' as LeaderboardType, label: 'Accuracy', icon: '🎯' },
-    { id: 'score' as LeaderboardType, label: 'Score', icon: '🏆' },
+    { id: "wpm" as LeaderboardType, label: "WPM", icon: "⚡" },
+    { id: "accuracy" as LeaderboardType, label: "Accuracy", icon: "🎯" },
+    { id: "score" as LeaderboardType, label: "Score", icon: "🏆" },
   ];
 
   return (
@@ -197,7 +210,12 @@ export const LeaderboardPage: React.FC = () => {
           transition={{ duration: 0.5 }}
         >
           <Box textAlign="center" p={6}>
-            <Text fontSize="3xl" fontWeight="bold" color="main" fontFamily="mono">
+            <Text
+              fontSize="3xl"
+              fontWeight="bold"
+              color="main"
+              fontFamily="mono"
+            >
               🏆 Leaderboards
             </Text>
             <Text fontSize="md" color="sub" fontFamily="mono">
@@ -242,10 +260,16 @@ export const LeaderboardPage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <Box>
-            <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono" mb={4}>
-              Top 10 - {tabs.find(tab => tab.id === activeTab)?.label}
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              color="main"
+              fontFamily="mono"
+              mb={4}
+            >
+              Top 10 - {tabs.find((tab) => tab.id === activeTab)?.label}
             </Text>
-            
+
             <LeaderboardTable
               entries={currentLeaderboard.data || []}
               loading={currentLeaderboard.loading}

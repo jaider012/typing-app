@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, AvatarGroup, AvatarRoot } from "@chakra-ui/react";
+import { Avatar, AvatarGroup } from "@chakra-ui/react";
 
 interface UserAvatarProps {
   src?: string | null;
