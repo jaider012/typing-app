@@ -148,7 +148,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 size="sm"
                 onClick={() => handleTabChange('login')}
                 borderRadius="sm"
-                bg={currentTab === 'login' ? 'white' : 'transparent'}
                 color={currentTab === 'login' ? 'main' : 'sub'}
                 _hover={{
                   bg: currentTab === 'login' ? 'white' : 'gray.50'
@@ -161,7 +160,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 size="sm"
                 onClick={() => handleTabChange('signup')}
                 borderRadius="sm"
-                bg={currentTab === 'signup' ? 'white' : 'transparent'}
                 color={currentTab === 'signup' ? 'main' : 'sub'}
                 _hover={{
                   bg: currentTab === 'signup' ? 'white' : 'gray.50'

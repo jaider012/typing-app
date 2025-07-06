@@ -1,6 +1,6 @@
 import React from "react";
 import { StatCard, MotionBox } from "../../atoms";
-
+import formatTime from "../../../utils/formatTimer";
 interface StatsBarProps {
   wpm: number;
   accuracy: number;
@@ -16,12 +16,6 @@ export const StatsBar: React.FC<StatsBarProps> = ({
   errors,
   isActive,
 }) => {
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
   return (
     <MotionBox
       display="grid"
@@ -34,26 +28,10 @@ export const StatsBar: React.FC<StatsBarProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <StatCard
-        label="WPM"
-        value={wpm}
-        color="primary.400"
-      />
-      <StatCard
-        label="Accuracy"
-        value={`${accuracy}%`}
-        color="green.400"
-      />
-      <StatCard
-        label="Time"
-        value={formatTime(timeLeft)}
-        color="orange.400"
-      />
-      <StatCard
-        label="Errors"
-        value={errors}
-        color="red.400"
-      />
+      <StatCard label="WPM" value={wpm} color="primary.400" />
+      <StatCard label="Accuracy" value={`${accuracy}%`} color="green.400" />
+      <StatCard label="Time" value={formatTime(timeLeft)} color="orange.400" />
+      <StatCard label="Errors" value={errors} color="red.400" />
     </MotionBox>
   );
 };

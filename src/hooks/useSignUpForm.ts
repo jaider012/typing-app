@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SignUpFormData } from "../../../types/auth";
+import { SignUpFormData } from "../types/auth";
 
 export const useSignUpForm = () => {
   const [formData, setFormData] = useState<SignUpFormData>({

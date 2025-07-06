@@ -11,7 +11,7 @@ import {
 import { MotionBox } from "../../atoms/MotionBox";
 import { ActionButton } from "../../atoms/ActionButton/ActionButton";
 import { SignUpFormData } from "../../../types/auth";
-import { useSignUpForm } from "./useSignUpForm";
+import { useSignUpForm } from "../../../hooks/useSignUpForm";
 
 interface SignUpFormProps {
   onSubmit: (data: SignUpFormData) => void;
@@ -131,7 +131,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 size="sm"
                 disabled={loading}
               >
-                {showPassword ? "noshow" : "show"}
+                {showPassword ? "x" : "show"}
               </IconButton>
             </HStack>
             {formData.password && (

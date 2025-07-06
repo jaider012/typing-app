@@ -11,7 +11,7 @@ import {
 import { MotionBox } from "../../atoms/MotionBox";
 import { ActionButton } from "../../atoms/ActionButton/ActionButton";
 import { LoginFormData } from "../../../types/auth";
-import { useLoginForm } from "./useLoginForm";
+import { useLoginForm } from "../../../hooks/useLoginForm";
 
 interface LoginFormProps {
   onSubmit: (data: LoginFormData) => void;
@@ -45,6 +45,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      style={{
+        width: "71%",
+      }}
     >
       <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <VStack gap={4}>
