@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Box, Flex, HStack, Text, IconButton } from "@chakra-ui/react";
 import { ActionButton } from "../../atoms";
 import { useColorMode } from "../../ui/color-mode";
@@ -18,6 +19,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   onAuthAction,
 }) => {
   const { colorMode } = useColorMode();
+  const location = useLocation();
 
   return (
     <Box
@@ -36,13 +38,62 @@ export const Navigation: React.FC<NavigationProps> = ({
       <Flex justify="space-between" align="center" maxW="1200px" mx="auto">
         {/* Logo */}
         <HStack gap={2}>
-          <Text fontSize="2xl" color="primary.400">⚡</Text>
-          <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono">
-            linctype
-          </Text>
+          <Link to="/">
+            <HStack gap={2} cursor="pointer" _hover={{ opacity: 0.8 }}>
+              <Text fontSize="2xl" color="primary.400">⚡</Text>
+              <Text fontSize="xl" fontWeight="bold" color="main" fontFamily="mono">
+                linctype
+              </Text>
+            </HStack>
+          </Link>
         </HStack>
 
-        {/* Navigation items */}
+        {/* Center Navigation */}
+        <HStack gap={1}>
+          <Link to="/">
+            <ActionButton
+              variant={location.pathname === "/" ? "solid" : "ghost"}
+              size="sm"
+              bg={location.pathname === "/" ? "caret" : "transparent"}
+              color={location.pathname === "/" ? "bg" : "main"}
+              _hover={{
+                bg: location.pathname === "/" ? "primary.600" : "card",
+              }}
+            >
+              Test
+            </ActionButton>
+          </Link>
+          <Link to="/leaderboard">
+            <ActionButton
+              variant={location.pathname === "/leaderboard" ? "solid" : "ghost"}
+              size="sm"
+              bg={location.pathname === "/leaderboard" ? "caret" : "transparent"}
+              color={location.pathname === "/leaderboard" ? "bg" : "main"}
+              _hover={{
+                bg: location.pathname === "/leaderboard" ? "primary.600" : "card",
+              }}
+            >
+              Leaderboard
+            </ActionButton>
+          </Link>
+          {user && (
+            <Link to="/profile">
+              <ActionButton
+                variant={location.pathname === "/profile" ? "solid" : "ghost"}
+                size="sm"
+                bg={location.pathname === "/profile" ? "caret" : "transparent"}
+                color={location.pathname === "/profile" ? "bg" : "main"}
+                _hover={{
+                  bg: location.pathname === "/profile" ? "primary.600" : "card",
+                }}
+              >
+                Profile
+              </ActionButton>
+            </Link>
+          )}
+        </HStack>
+
+        {/* Right side items */}
         <HStack gap={4}>
           <IconButton
             aria-label="Toggle theme"

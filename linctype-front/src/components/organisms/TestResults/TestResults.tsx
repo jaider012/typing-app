@@ -10,6 +10,7 @@ interface TestResultsProps {
   onRetry: () => void;
   onSave?: () => void;
   isVisible: boolean;
+  isSaving?: boolean;
 }
 
 export const TestResults: React.FC<TestResultsProps> = ({
@@ -18,6 +19,7 @@ export const TestResults: React.FC<TestResultsProps> = ({
   onRetry,
   onSave,
   isVisible,
+  isSaving = false,
 }) => {
   const improvements = previousBest
     ? {
@@ -159,8 +161,13 @@ export const TestResults: React.FC<TestResultsProps> = ({
               variant="solid"
               onClick={onSave}
               size="lg"
+              loading={isSaving}
+              disabled={isSaving}
+              bg="caret"
+              color="bg"
+              _hover={{ bg: "primary.600" }}
             >
-              Save Result
+              {isSaving ? "Saving..." : "Save Result"}
             </ActionButton>
           )}
         </HStack>

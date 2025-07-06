@@ -35,6 +35,12 @@ export const TypingTestPage: React.FC = () => {
     resetTest,
     setTestTime,
     setTestMode,
+    saveResult,
+
+    // Save state
+    isSaving,
+    saveError,
+    canSave,
   } = useTypingTest();
 
   return (
@@ -103,7 +109,8 @@ export const TypingTestPage: React.FC = () => {
           results={results}
           onRetry={resetTest}
           isVisible={isCompleted}
-          // onSave={} // TODO: Implement save functionality
+          onSave={canSave ? saveResult : undefined}
+          isSaving={isSaving}
         />
       </VStack>
     </MainLayout>

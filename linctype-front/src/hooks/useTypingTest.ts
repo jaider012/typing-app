@@ -1,9 +1,22 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { TestMode, TestResult, TypingState } from '../types/test';
 import { useTimer } from './useTimer';
+import { useAuth } from './useAuth';
+import { useCreateTest } from './useApi';
+import { CreateTestDto } from '../services/api';
 import { generateWords, generateQuote } from '../utils/wordGenerator';
+import { createToaster } from '@chakra-ui/react';
+
+const toaster = createToaster({
+  placement: 'top',
+  pauseOnPageIdle: true
+});
 
 export const useTypingTest = () => {
+  // Auth and API hooks
+  const { user, isAuthenticated } = useAuth();
+  const createTestApi = useCreateTest();
+  
   // Test configuration
   const [testTime, setTestTime] = useState(60);
   const [testMode, setTestMode] = useState<TestMode>('time');
@@ -244,6 +257,46 @@ export const useTypingTest = () => {
     };
   }, [state, accuracy]);
 
+  // Save test result to backend
+  const saveResult = useCallback(async () => {
+    if (!isAuthenticated || !state.isCompleted) {
+      return { success: false, error: 'Test not completed or user not authenticated' };
+    }
+
+    try {
+      // Map frontend TestResult to backend CreateTestDto
+      const payload: CreateTestDto = {
+        wpm: results.wpm,
+        accuracy: results.accuracy,
+        score: results.score,
+        wordsTyped: results.wordsTyped,
+        timeSpent: results.timeSpent,
+        mistakes: results.errors, // Map frontend 'errors' to backend 'mistakes'
+        text: results.text,
+      };
+
+      const savedTest = await createTestApi.execute(payload);
+      
+      toaster.create({
+        title: 'Test guardado',
+        description: 'Tu resultado ha sido guardado exitosamente',
+        status: 'success',
+        duration: 3000,
+      });
+
+      return { success: true, data: savedTest };
+    } catch (error) {
+      toaster.create({
+        title: 'Error al guardar',
+        description: 'No se pudo guardar el resultado del test',
+        status: 'error',
+        duration: 3000,
+      });
+
+      return { success: false, error: 'Failed to save test result' };
+    }
+  }, [isAuthenticated, state.isCompleted, results, createTestApi]);
+
   return {
     // State
     words: state.words,
@@ -271,10 +324,16 @@ export const useTypingTest = () => {
     resetTest,
     setTestTime,
     setTestMode,
+    saveResult,
     startTest: () => {
       if (!state.isActive) {
         // Focus will trigger input which will start the test
       }
-    }
+    },
+    
+    // Save state
+    isSaving: createTestApi.loading,
+    saveError: createTestApi.error,
+    canSave: isAuthenticated && state.isCompleted,
   };
 };
