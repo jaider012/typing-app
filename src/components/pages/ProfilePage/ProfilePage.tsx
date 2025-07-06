@@ -13,7 +13,7 @@ import { StatCard } from "../../atoms";
 import { MotionBox } from "../../atoms/MotionBox";
 import { useUserStats } from "../../../hooks/useUserStats";
 import { useAuth } from "../../../hooks/useAuth";
-import { TestResult } from "../../../services/types";
+import { TestResult, UserStats } from "../../../services/types";
 
 export const ProfilePage: React.FC = () => {
   const { user } = useAuth();
@@ -95,42 +95,42 @@ export const ProfilePage: React.FC = () => {
             ) : statsError ? (
               <Box p={4} bg="card" borderRadius="md" textAlign="center">
                 <Text color="sub" fontFamily="mono">
-                  Error loading statistics: {statsError}
+                  Error loading statistics: {typeof statsError === 'string' ? statsError : 'Unknown error'}
                 </Text>
               </Box>
-            ) : stats ? (
+            ) : stats && (stats as UserStats) ? (
               <Grid
                 templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
                 gap={6}
               >
                 <StatCard
                   label="Best WPM"
-                  value={stats.bestWpm}
+                  value={(stats as UserStats).bestWpm}
                   icon={<Text>⚡</Text>}
                 />
                 <StatCard
                   label="Best Accuracy"
-                  value={`${stats.bestAccuracy}%`}
+                  value={`${(stats as UserStats).bestAccuracy}%`}
                   icon={<Text>🎯</Text>}
                 />
                 <StatCard
                   label="Tests Completed"
-                  value={stats.totalTests}
+                  value={(stats as UserStats).totalTests}
                   icon={<Text>📊</Text>}
                 />
                 <StatCard
                   label="Average WPM"
-                  value={stats.averageWpm}
+                  value={(stats as UserStats).averageWpm}
                   icon={<Text>📈</Text>}
                 />
                 <StatCard
                   label="Average Accuracy"
-                  value={`${stats.averageAccuracy}%`}
+                  value={`${(stats as UserStats).averageAccuracy}%`}
                   icon={<Text>✅</Text>}
                 />
                 <StatCard
                   label="Best Score"
-                  value={stats.bestScore}
+                  value={(stats as UserStats).bestScore}
                   icon={<Text>🏆</Text>}
                 />
               </Grid>
@@ -169,12 +169,12 @@ export const ProfilePage: React.FC = () => {
             ) : testsError ? (
               <Box p={4} bg="card" borderRadius="md" textAlign="center">
                 <Text color="sub" fontFamily="mono">
-                  Error loading tests: {testsError}
+                  Error loading tests: {typeof testsError === 'string' ? testsError : 'Unknown error'}
                 </Text>
               </Box>
-            ) : tests && tests.length > 0 ? (
+            ) : tests && Array.isArray(tests) && (tests as TestResult[]).length > 0 ? (
               <VStack gap={4} align="stretch">
-                {tests.map((test: TestResult, index: number) => (
+                {(tests as TestResult[]).map((test: TestResult, index: number) => (
                   <Box
                     key={test.id}
                     p={4}

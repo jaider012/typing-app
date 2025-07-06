@@ -3,11 +3,7 @@ import { VStack, HStack, Box, Text, Spinner, Center } from "@chakra-ui/react";
 import { MainLayout } from "../../templates/MainLayout/MainLayout";
 import { ActionButton, UserAvatar } from "../../atoms";
 import { MotionBox } from "../../atoms/MotionBox";
-import {
-  useGetWpmLeaderboard,
-  useGetAccuracyLeaderboard,
-  useGetScoreLeaderboard,
-} from "../../../hooks/useApi";
+import { useTypingService } from "../../../services/typing.service";
 import { LeaderboardEntry } from "../../../services/types";
 
 type LeaderboardType = "wpm" | "accuracy" | "score";
@@ -160,28 +156,49 @@ const LeaderboardTable: React.FC<{
 
 export const LeaderboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<LeaderboardType>("wpm");
+  const [wpmData, setWpmData] = useState<LeaderboardEntry[]>([]);
+  const [accuracyData, setAccuracyData] = useState<LeaderboardEntry[]>([]);
+  const [scoreData, setScoreData] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const wpmLeaderboard = useGetWpmLeaderboard();
-  const accuracyLeaderboard = useGetAccuracyLeaderboard();
-  const scoreLeaderboard = useGetScoreLeaderboard();
+  const { getWpmLeaderboard, getAccuracyLeaderboard, getScoreLeaderboard } =
+    useTypingService();
+
   useEffect(() => {
-    // Load leaderboards on mount - only once
-    wpmLeaderboard.execute(10);
-    accuracyLeaderboard.execute(10);
-    scoreLeaderboard.execute(10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array to run only on mount
+    const loadLeaderboards = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [wpmResult, accuracyResult, scoreResult] = await Promise.all([
+          getWpmLeaderboard(10),
+          getAccuracyLeaderboard(10),
+          getScoreLeaderboard(10),
+        ]);
+        
+        setWpmData(wpmResult || []);
+        setAccuracyData(accuracyResult || []);
+        setScoreData(scoreResult || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load leaderboards");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLeaderboards();
+  }, [getWpmLeaderboard, getAccuracyLeaderboard, getScoreLeaderboard]);
 
   const getCurrentLeaderboard = () => {
     switch (activeTab) {
       case "wpm":
-        return wpmLeaderboard;
+        return { data: wpmData, loading, error };
       case "accuracy":
-        return accuracyLeaderboard;
+        return { data: accuracyData, loading, error };
       case "score":
-        return scoreLeaderboard;
+        return { data: scoreData, loading, error };
       default:
-        return wpmLeaderboard;
+        return { data: wpmData, loading, error };
     }
   };
 

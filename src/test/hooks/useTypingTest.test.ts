@@ -61,6 +61,7 @@ describe("useTypingTest Hook", () => {
       error: null,
       data: null,
       reset: jest.fn(),
+      clearError: jest.fn(),
     });
   });
 

@@ -51,8 +51,4 @@ export interface LeaderboardEntry {
   score?: number;
 }
 
-export interface ApiError {
-  message: string;
-  status: number;
-  statusText: string;
-}
+

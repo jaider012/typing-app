@@ -1,89 +1,108 @@
-import { useState, useCallback } from 'react';
-import { apiService } from '../services/api';
+import { useState, useCallback } from "react";
+import { useTypingService } from "../services/typing.service";
 
-interface UseApiState<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
-
-interface UseApiReturn<T> extends UseApiState<T> {
-  execute: (...args: any[]) => Promise<T>;
-  reset: () => void;
-}
-
-export function useApi<T>(
-  apiFunction: (...args: any[]) => Promise<T>,
-  immediate = false
-): UseApiReturn<T> {
-  const [state, setState] = useState<UseApiState<T>>({
-    data: null,
-    loading: immediate,
-    error: null,
-  });
-
-  const execute = useCallback(
-    async (...args: any[]): Promise<T> => {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-
-      try {
-        const result = await apiFunction(...args);
-        setState({ data: result, loading: false, error: null });
-        return result;
-      } catch (error) {
-        const errorMessage = apiService.isApiError(error)
-          ? error.message
-          : 'Error inesperado';
-        setState({ data: null, loading: false, error: errorMessage });
-        throw error;
-      }
-    },
-    [apiFunction]
-  );
-
+export const useCreateTest = () => {
+  const { createTest, loading, error, clearError } = useTypingService();
+  const [data, setData] = useState<any>(null);
+  
+  const execute = useCallback(async (payload: any) => {
+    const result = await createTest(payload);
+    setData(result);
+    return result;
+  }, [createTest]);
+  
   const reset = useCallback(() => {
-    setState({ data: null, loading: false, error: null });
+    setData(null);
   }, []);
-
+  
   return {
-    ...state,
     execute,
-    reset,
+    data,
+    loading,
+    error,
+    clearError,
+    reset
   };
-}
+};
 
-// Specific hooks for common operations
-export function useCreateTest() {
-  const apiFunction = useCallback((data: any) => apiService.createTest(data), []);
-  return useApi(apiFunction);
-}
+export const useGetTests = () => {
+  const { getTests, loading, error, clearError } = useTypingService();
+  const [data, setData] = useState<any>(null);
+  
+  const execute = useCallback(async (limit?: number) => {
+    const result = await getTests(limit);
+    setData(result);
+    return result;
+  }, [getTests]);
+  
+  return {
+    execute,
+    data,
+    loading,
+    error,
+    clearError
+  };
+};
 
-export function useGetTests() {
-  const apiFunction = useCallback((limit?: number) => apiService.getTests(limit), []);
-  return useApi(apiFunction);
-}
+export const useGetUserStats = () => {
+  const { getUserStats, loading, error, clearError } = useTypingService();
+  const [data, setData] = useState<any>(null);
+  
+  const execute = useCallback(async () => {
+    const result = await getUserStats();
+    setData(result);
+    return result;
+  }, [getUserStats]);
+  
+  return {
+    execute,
+    data,
+    loading,
+    error,
+    clearError
+  };
+};
 
-export function useGetUserStats() {
-  const apiFunction = useCallback(() => apiService.getUserStats(), []);
-  return useApi(apiFunction);
-}
+export const useGetUserProfile = () => {
+  const { getUserProfile, loading, error, clearError } = useTypingService();
+  
+  return {
+    getUserProfile,
+    loading,
+    error,
+    clearError
+  };
+};
 
-export function useGetUserProfile() {
-  const apiFunction = useCallback(() => apiService.getUserProfile(), []);
-  return useApi(apiFunction);
-}
+export const useGetWpmLeaderboard = () => {
+  const { getWpmLeaderboard, loading, error, clearError } = useTypingService();
+  
+  return {
+    getWpmLeaderboard,
+    loading,
+    error,
+    clearError
+  };
+};
 
-export function useGetWpmLeaderboard() {
-  const apiFunction = useCallback((limit?: number) => apiService.getWpmLeaderboard(limit), []);
-  return useApi(apiFunction);
-}
+export const useGetAccuracyLeaderboard = () => {
+  const { getAccuracyLeaderboard, loading, error, clearError } = useTypingService();
+  
+  return {
+    getAccuracyLeaderboard,
+    loading,
+    error,
+    clearError
+  };
+};
 
-export function useGetAccuracyLeaderboard() {
-  const apiFunction = useCallback((limit?: number) => apiService.getAccuracyLeaderboard(limit), []);
-  return useApi(apiFunction);
-}
-
-export function useGetScoreLeaderboard() {
-  const apiFunction = useCallback((limit?: number) => apiService.getScoreLeaderboard(limit), []);
-  return useApi(apiFunction);
-}
+export const useGetScoreLeaderboard = () => {
+  const { getScoreLeaderboard, loading, error, clearError } = useTypingService();
+  
+  return {
+    getScoreLeaderboard,
+    loading,
+    error,
+    clearError
+  };
+};
