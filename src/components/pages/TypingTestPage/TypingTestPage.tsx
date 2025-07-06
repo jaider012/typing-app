@@ -1,6 +1,5 @@
 import React from "react";
-import { VStack, HStack, Icon, Box } from "@chakra-ui/react";
-import { BiPlay, BiRefresh } from "react-icons/bi";
+import { VStack, HStack, Box } from "@chakra-ui/react";
 import { MainLayout } from "../../templates/MainLayout/MainLayout";
 import { TypingArea, TestResults } from "../../organisms";
 import { TestConfigBar, StatsBar } from "../../molecules";
